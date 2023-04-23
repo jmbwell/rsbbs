@@ -11,7 +11,7 @@ setup(
     author='John Burwell',
     author_email='john@atatdotdot.com',
 
-    url='https://github.com/jmbwell/really-simple-bbs',
+    url='https://git.b-wells.us/jmbwell/rsbbs',
 
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -31,12 +31,15 @@ setup(
 
     entry_points={
           'console_scripts': [
-              'really-simple-bbs = main:main',
+              'main.py = main:main',
           ],
       },
 
     install_requires=[
-        'PyYAML==4.2b1',
+        'greenlet==2.0.2',
+        'PyYAML==6.0',
+        'SQLAlchemy==2.0.10',
+        'typing_extensions==4.5.0',
       ],
 
 

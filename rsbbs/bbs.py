@@ -6,7 +6,6 @@ import yaml
 
 from sqlalchemy import create_engine, delete, select
 from sqlalchemy.orm import Session
-from typing import *
 
 from rsbbs.message import Message, Base
 from rsbbs.parser import Parser
@@ -18,9 +17,14 @@ class BBS():
 
     def __init__(self, sysv_args):
 
-        self.config = self.load_config(sysv_args.config_file)
         self.sysv_args = sysv_args
+
+        self.config = self.load_config(sysv_args.config_file)
+
         self.calling_station = sysv_args.calling_station
+
+        self.engine = self.init_engine()
+        self.parser = self.init_parser()
 
         logging.config.dictConfig(self.config['logging'])
 
@@ -56,8 +60,7 @@ class BBS():
 
     # Set up the BBS command parser
 
-    @property
-    def parser(self):
+    def init_parser(self):
         commands = [
             # (name, aliases, helpmsg, function, {arg: {arg attributes}, ...})
             ('bye', ['b', 'q'], 'Sign off and disconnect', self.bye, {}),
@@ -93,18 +96,13 @@ class BBS():
 
     # Database
 
-    @property
-    def engine(self):
+    def init_engine(self):
         engine = create_engine('sqlite:///messages.db', echo=self.sysv_args.debug)
         Base.metadata.create_all(engine)
         return engine
     
 
     # Input and output
-
-    @property
-    def input_stream(self):
-        return sys.stdin
     
     def read_line(self, prompt):
         output = None
@@ -260,7 +258,7 @@ class BBS():
         self.write_output(self.config['command_prompt'])
 
         # Parse the BBS interactive commands for the rest of time
-        for line in self.input_stream:
+        for line in sys.stdin:
             try:
                 args = self.parser.parse_args(line.split())
                 args.func(args)

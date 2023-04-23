@@ -1,10 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import *
-from sqlalchemy.orm import *
-from typing import *
-
-# engine = create_engine('sqlite:///messages.db', echo=True)
+from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class Base(DeclarativeBase):
     pass
