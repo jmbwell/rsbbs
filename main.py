@@ -3,7 +3,6 @@ import sys
 
 from rsbbs.bbs import BBS
 
-
 def main():
 
     # Parse and handle the system invocation arguments
@@ -37,7 +36,7 @@ def main():
     
     sysv_args = sysv_parser.parse_args(sys.argv[1:])
 
-    # Instantiate the BBS object with the supplied (or default) config file
+    # Instantiate the BBS object
     bbs = BBS(sysv_args)
 
     # Start the main BBS loop
