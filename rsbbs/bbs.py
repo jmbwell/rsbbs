@@ -165,18 +165,23 @@ class BBS():
 
     def delete_mine(self, args):
         '''Delete all messages addressed to user'''
-        with Session(self.engine) as session:
-            try:
-                statement = delete(Message).where(Message.recipient == self.calling_station).returning(Message)
-                results = session.execute(statement)
-                count = len(results.all())
-                if count > 0:
-                    self.write_output(f"Deleted {count} messages")
-                    session.commit()
-                else:
-                    self.write_output(f"No messages to delete.")
-            except Exception as e:
-                self.write_output(f"Unable to delete messages: {e}")
+        self.write_output("Delete all messages addressed to you? Y/N:")
+        response = sys.stdin.readline().strip()
+        if response.lower() != "y":
+            return
+        else:
+            with Session(self.engine) as session:
+                try:
+                    statement = delete(Message).where(Message.recipient == self.calling_station).returning(Message)
+                    results = session.execute(statement)
+                    count = len(results.all())
+                    if count > 0:
+                        self.write_output(f"Deleted {count} messages")
+                        session.commit()
+                    else:
+                        self.write_output(f"No messages to delete.")
+                except Exception as e:
+                    self.write_output(f"Unable to delete messages: {e}")
 
     def heard(self, args):
         '''Show heard stations log'''
