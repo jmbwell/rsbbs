@@ -64,7 +64,7 @@ class BBS():
         commands = [
             # (name, aliases, helpmsg, function, {arg: {arg attributes}, ...})
             ('bye', ['b', 'q'], 'Sign off and disconnect', self.bye, {}),
-            ('delete', ['k', 'd'], 'Delete a message', self.delete,
+            ('delete', ['d', 'k'], 'Delete a message', self.delete,
                 {'number': {'help': 'The numeric index of the message to delete'}},
             ),
             ('deletem', ['dm', 'km'], 'Delete all your messages', self.delete_mine, {}),
@@ -115,7 +115,7 @@ class BBS():
         return output
 
     def read_multiline(self, prompt):
-        output = ""
+        output = []
         if prompt:
             self.write_output(prompt)
         while True:
@@ -123,8 +123,8 @@ class BBS():
             if line.lower().strip() == "/ex":
                 break
             else:
-                output += line
-        return output
+                output.append(line)
+        return ''.join(output)
 
     def write_output(self, output):
         sys.stdout.write(output + '\r\n')
@@ -219,10 +219,16 @@ class BBS():
         with Session(self.engine) as session:
             statement = select(Message).where(Message.recipient == self.calling_station)
             result = session.execute(statement)
-            for message in result.all():
-                self.print_message(message)
-                self.write_output("Enter to continue")
-                sys.stdin.readline()
+            messages = result.all()
+            count = len(messages)
+            if count > 0:
+                self.write_output(f"Reading {count} messages:")
+                for message in messages:
+                    self.print_message(message)
+                    self.write_output("Enter to continue...")
+                    sys.stdin.readline()
+            else:
+                self.write_output(f"No messages to read.")
 
     def send(self, args, is_private=False):
         '''Create a message addressed to another user'''
