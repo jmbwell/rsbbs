@@ -9,31 +9,22 @@ def main():
     sysv_parser = argparse.ArgumentParser(
         description="A Really Simple BBS.")
 
-    sysv_parser.add_argument('-d', '--debug', 
-                             action='store_true', 
-                             default=None,
-                             dest="debug",
-                             help="Enable debugging output to stdout", 
-                             required=False)
-    
-    sysv_parser.add_argument('-s', '--calling-station', 
-                             action='store', 
-                             default='N0CALL',
-                             dest="calling_station",
-                             help="The callsign of the calling station", 
-                             required=True)
-    
-    sysv_parser.add_argument('-f', '--config-file', 
-                             action='store', 
-                             default='config.yaml',
-                             dest="config_file",
-                             help="specify path to config.yaml file", 
-                             required=False)
-    
+    # Configure args:
+    args_list = [
+        #[ short, long, action, default, dest, help, required ]
+        ['-d', '--debug', 'store_true', None, 'debug', 'Enable debugging output to stdout', False],
+        ['-s', '--calling-station', 'store', 'N0CALL', 'calling_station', 'The callsign of the calling station', True],
+        ['-f', '--config-file', 'store', 'config.yaml', 'config_file', 'specify path to config.yaml file', False],
+    ]
+    for arg in args_list:
+        sysv_parser.add_argument(arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4], help=arg[5], required=arg[6])
+
+    # Version arg is special:
     sysv_parser.add_argument('-v', '--version', 
                              action='version', 
                              version=f"{sysv_parser.prog} version zero point aitch point negative purple")
-    
+
+    # Parse the args from the system
     sysv_args = sysv_parser.parse_args(sys.argv[1:])
 
     # Instantiate the BBS object
