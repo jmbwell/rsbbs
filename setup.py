@@ -38,6 +38,6 @@ setup(
     packages=find_packages(exclude=('tests', 'docs')),
     entry_points = '''
         [console_scripts]
-        rsbbs=rsbbs:main
+        rsbbs=rsbbs.rsbbs:main
     '''
 )
