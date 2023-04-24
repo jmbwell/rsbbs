@@ -40,12 +40,12 @@ def main():
     ]
     for arg in args_list:
         sysv_parser.add_argument(
-            arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4], 
+            arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4],
             help=arg[5], required=arg[6])
 
     # Version arg is special:
-    sysv_parser.add_argument('-v', '--version', 
-                             action='version', 
+    sysv_parser.add_argument('-v', '--version',
+                             action='version',
                              version=f"{sysv_parser.prog} version 0.h.-p")
 
     # Parse the args from the system
