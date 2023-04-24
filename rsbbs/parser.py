@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -18,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse
+
 
 # We want to override the error and exit methods of ArgumentParser
 # to prevent it exiting unexpectedly or spewing error data over the air
@@ -61,4 +61,4 @@ class Parser(BBSArgumentParser):
                 subparser.add_argument(arg_name, **options)
             subparser.set_defaults(func=func)
 
-        return parser    
+        return parser

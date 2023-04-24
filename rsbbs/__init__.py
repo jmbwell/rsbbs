@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -17,4 +16,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__all__ = ["bbs", "message", "parser", "project_root"]
+__all__ = ["rsbbs", "bbs", "message", "parser"]

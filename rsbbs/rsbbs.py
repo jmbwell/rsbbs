@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -22,6 +21,7 @@ import sys
 
 from rsbbs.bbs import BBS
 
+
 def main():
 
     # Parse and handle the system invocation arguments
@@ -30,13 +30,18 @@ def main():
 
     # Configure args:
     args_list = [
-        #[ short, long, action, default, dest, help, required ]
-        ['-d', '--debug', 'store_true', None, 'debug', 'Enable debugging output to stdout', False],
-        ['-s', '--calling-station', 'store', 'N0CALL', 'calling_station', 'The callsign of the calling station', True],
-        ['-f', '--config-file', 'store', 'config.yaml', 'config_file', 'specify path to config.yaml file', False],
+        # [ short, long, action, default, dest, help, required ]
+        ['-d', '--debug', 'store_true', None, 'debug',
+            'Enable debugging output to stdout', False],
+        ['-s', '--calling-station', 'store', 'N0CALL', 'calling_station',
+            'The callsign of the calling station', True],
+        ['-f', '--config-file', 'store', 'config.yaml', 'config_file',
+            'specify path to config.yaml file', False],
     ]
     for arg in args_list:
-        sysv_parser.add_argument(arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4], help=arg[5], required=arg[6])
+        sysv_parser.add_argument(
+            arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4], 
+            help=arg[5], required=arg[6])
 
     # Version arg is special:
     sysv_parser.add_argument('-v', '--version', 
@@ -51,6 +56,7 @@ def main():
 
     # Start the main BBS loop
     bbs.run()
+
 
 if __name__ == "__main__":
     main()

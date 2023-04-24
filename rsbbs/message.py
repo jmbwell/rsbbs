@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -22,8 +21,10 @@ from datetime import datetime, timezone
 from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class Message(Base):
     __tablename__ = 'message'
@@ -32,6 +33,6 @@ class Message(Base):
     recipient: Mapped[str] = mapped_column(String)
     subject: Mapped[str] = mapped_column(String)
     message: Mapped[str] = mapped_column(String)
-    datetime: Mapped[DateTime] = mapped_column(DateTime, default=datetime.now(timezone.utc))
+    datetime: Mapped[DateTime] = mapped_column(
+        DateTime, default=datetime.now(timezone.utc))
     is_private: Mapped[bool] = mapped_column(Boolean)
-
