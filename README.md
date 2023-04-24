@@ -5,6 +5,7 @@ Really Simple BBS (rsbbs) implements a message board for packet radio, suitable 
 ## Installation
 
 1. Clone the repo to a reasonable location.
+2. Run `pip install -r requirements.txt` (setup.py is not working)
 2. Copy config.yaml.sample to config.yaml and update it.
 
 ## Usage
@@ -45,3 +46,6 @@ options:
 
 Checkout the [sample transcript](sample_transcript.txt) for a look at how it works.
 
+## License
+
+GPLv3. 
