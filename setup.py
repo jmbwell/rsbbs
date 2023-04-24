@@ -35,5 +35,9 @@ setup(
     author_email='john@atatdotdot.com',
     url='https://git.b-wells.us/jmbwell/rsbbs',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    entry_points = '''
+        [console_scripts]
+        rsbbs=rsbbs:main
+    '''
 )

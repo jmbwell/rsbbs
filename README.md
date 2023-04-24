@@ -5,7 +5,7 @@ Really Simple BBS (rsbbs) implements a message board for packet radio, suitable 
 ## Installation
 
 1. Clone the repo to a reasonable location.
-2. Run `pip install -r requirements.txt` (setup.py is not working)
+2. Run `pip install -r requirements.txt`
 2. Copy config.yaml.sample to config.yaml and update it.
 
 ## Usage
@@ -16,7 +16,7 @@ Assuming you have `ax25d` working on your system, add something like the followi
 
 ```
 [KI5QKX-10 via vhf0]
-default   * * * * * *  *    root    /opt/local/rsbbs/main.py rsbbs -s %S
+default   * * * * * *  *    root    /usr/local/bin/rsbbs rsbbs -s %S
 ```
 
 ### Directly
@@ -24,13 +24,13 @@ default   * * * * * *  *    root    /opt/local/rsbbs/main.py rsbbs -s %S
 You can also run it directly:
 ```
 cd /path/to/rsbbs
-python3 main.py -s URCALL
+python3 rsbbs.py -s URCALL
 ```
 
 ### Options
 
 ```
-usage: main.py [-h] [-d] -s CALLING_STATION [-f CONFIG_FILE] [-v]
+usage: rsbbs.py [-h] [-d] -s CALLING_STATION [-f CONFIG_FILE] [-v]
 
 options:
   -h, --help            show this help message and exit
