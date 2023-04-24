@@ -1,6 +1,6 @@
 # Really Simple BBS
 
-Really Simple BBS (rsbbs) implements a message board for packet radio, suitable for use with ax25d.
+Really Simple BBS (rsbbs) implements a message board for packet radio, suitable for use with ax25d. It roughly adopts the command conventions established by popular packet radio BBSes, (`B`, `J`, `K`, `L`, `R`, `S`, `H`, etc.).
 
 ## Installation
 
@@ -44,3 +44,4 @@ options:
 ## Operation
 
 Checkout the [sample transcript](sample_transcript.txt) for a look at how it works.
+
