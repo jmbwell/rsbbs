@@ -41,12 +41,12 @@ Assuming you have `ax25d` working on your system, add something like the followi
 
 ```
 [KI5QKX-10 via vhf0]
-default   * * * * * *  *    root    /usr/local/bin/rsbbs rsbbs -s %S
+default   * * * * * *  *    root    /usr/local/bin/rsbbs rsbbs -s %U
 ```
 
 Notes:
 - The installation path may vary on your system. 
-- Be sure to specify the `-s %S` parameters; this passes the ax.25 caller's callsign to the `rsbbs` application.
+- Be sure to specify the `-s %U` parameters; this passes the ax.25 caller's callsign to the `rsbbs` application.
 
 See the ax25d man page for more details.
 
