@@ -28,16 +28,16 @@ with open('LICENSE') as f:
 setup(
     name='rsbbs',
     version='0.1.0',
-    description='The Really Simple BBS for ax25d and packet radio',
+    description='A BBS for ax25d and packet radio that is really simple',
     long_description=readme,
     author='John Burwell',
     author_email='john@atatdotdot.com',
     url='https://git.b-wells.us/jmbwell/rsbbs',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
-    data_files=[('', ['config_default.yaml'])],
-    entry_points='''
+    data_files=[('config', ['config/config_default.yaml'])],
+    entry_points="""
         [console_scripts]
         rsbbs=rsbbs.rsbbs:main
-    '''
+    """
 )
