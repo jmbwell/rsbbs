@@ -26,7 +26,8 @@ def main():
 
     # Parse and handle the system invocation arguments
     sysv_parser = argparse.ArgumentParser(
-        description="A Really Simple BBS.")
+        description=("The BBS for ax.25 and packet radio "
+                     "that is really simple."))
 
     # Configure args:
     args_list = [
