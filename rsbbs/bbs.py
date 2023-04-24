@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -39,7 +40,7 @@ class BBS():
 
         self.config = self.load_config(sysv_args.config_file)
 
-        self.calling_station = sysv_args.calling_station
+        self.calling_station = sysv_args.calling_station.upper()
 
         self.engine = self.init_engine()
         self.parser = self.init_parser()
@@ -276,7 +277,7 @@ class BBS():
 
     # Main loop
 
-    def main(self):
+    def run(self):
         # Show greeting
         self.write_output(f"[RSBBS-1.0.0] listening on {self.config['callsign']} ")
         self.write_output(f"Welcome to {self.config['bbs_name']}, {self.calling_station}")

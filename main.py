@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # Really Simple BBS - a really simple BBS for ax.25 packet radio.
 # Copyright (C) 2023 John Burwell <john@atatdotdot.com>
@@ -40,7 +41,7 @@ def main():
     # Version arg is special:
     sysv_parser.add_argument('-v', '--version', 
                              action='version', 
-                             version=f"{sysv_parser.prog} version zero point aitch point negative purple")
+                             version=f"{sysv_parser.prog} version 0.h.-p")
 
     # Parse the args from the system
     sysv_args = sysv_parser.parse_args(sys.argv[1:])
@@ -49,7 +50,7 @@ def main():
     bbs = BBS(sysv_args)
 
     # Start the main BBS loop
-    bbs.main()
+    bbs.run()
 
 if __name__ == "__main__":
     main()
