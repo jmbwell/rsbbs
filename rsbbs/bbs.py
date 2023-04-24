@@ -29,6 +29,8 @@ from sqlalchemy.orm import Session
 from rsbbs.message import Message, Base
 from rsbbs.parser import Parser
 
+import platformdirs
+
 
 # Main BBS class
 
@@ -58,21 +60,32 @@ class BBS():
     # Load the config file
     def load_config(self, config_file):
 
+        config_dir = platformdirs.user_config_dir(appname='rsbbs', ensure_exists=True)
+
+        config_path = os.path.join(config_dir, 'config.yaml')
+        config_template_path = os.path.join(os.path.dirname(__file__), 'config_default.yaml')
+
+        if not os.path.exists(config_path):
+            with open(config_template_path, 'r') as f:
+                config_template = yaml.load(f, Loader=yaml.FullLoader)
+            with open(config_path, 'w') as f:
+                yaml.dump(config_template, f)
+
         try:
-            with open(config_file, 'r') as stream:
-                config = yaml.safe_load(stream)
+            with open(config_path, 'r') as f:
+                config = yaml.load(f, Loader=yaml.FullLoader)
         except yaml.YAMLError as e:
-            print("Could not load configuration file. Error: {}".format(e))
+            print(f"Could not load configuration file. Error: {e}")
             exit(1)
         except FileNotFoundError as e:
-            print('Configuration file full path: {}'.format(os.path.abspath(config_file)))
-            print("Configuration file {} could not be found. Error: {}".format(config_file, e))
+            print(f'Configuration file full path: {os.path.abspath(config_file)}')
+            print(f"Configuration file {config_file} could not be found. Error: {e}")
             exit(1)
         except Exception as msg:
-            print("Error while loading configuration file {}. Error: {}".format(config_file))
+            print(f"Error while loading configuration file {config_file}. Error: {e}")
             exit(1)
 
-        logging.info("Configuration file was successfully loaded. File name: {}".format(config_file))
+        logging.info(f"Configuration file was successfully loaded. File name: {config_file}")
 
         return config
     
@@ -116,7 +129,8 @@ class BBS():
     # Database
 
     def init_engine(self):
-        engine = create_engine('sqlite:///messages.db', echo=self.sysv_args.debug)
+        db_path = os.path.join(platformdirs.user_data_dir(appname='rsbbs', ensure_exists=True), 'messages.db')
+        engine = create_engine('sqlite:///' + db_path, echo=self.sysv_args.debug)
         Base.metadata.create_all(engine)
         return engine
     
