@@ -1,0 +1,157 @@
+[RSBBS-1.0.0] listening on KI5QKX-10 
+Welcome to Really Simple BBS, KI5QKX
+KI5QKX-10 welcomes you
+For help, enter 'h'
+ENTER COMMAND >
+h
+BBS Main Menu
+
+Commands:
+  {bye,b,q,delete,d,k,deletem,dm,km,help,h,?,heard,j,list,l,listm,lm,read,r,readm,rm,send,s,sendp,sp}
+    bye (b, q)          Sign off and disconnect
+    delete (d, k)       Delete a message
+    deletem (dm, km)    Delete all your messages
+    help (h, ?)         Show help
+    heard (j)           Show heard stations log
+    list (l)            List all messages
+    listm (lm)          List only messages addressed to you
+    read (r)            Read messages
+    readm (rm)          Read only messages addressed to you
+    send (s)            Send a new message to a user
+    sendp (sp)          Send a private message to a user
+ENTER COMMAND >
+s ki5qkx
+Subject:
+Howdy!
+Message - end with /ex on a single line:
+Look out, it's a message!
+/ex
+Message saved!
+ENTER COMMAND >
+sp ki5qkx
+Subject:
+This one is PRIVATE
+Message - end with /ex on a single line:
+Don't look!
+/ex
+Message saved!
+ENTER COMMAND >
+l
+MSG#  TO        FROM      DATE        SUBJECT
+5     KI5QKX    KI5QKX    2023-04-23  Howdy!
+6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+ENTER COMMAND >
+lm 
+MSG#  TO        FROM      DATE        SUBJECT
+5     KI5QKX    KI5QKX    2023-04-23  Howdy!
+6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+ENTER COMMAND >
+rm
+Reading 2 messages:
+
+Message: 5
+Date:    Sunday, April 23, 2023 at 23:04 PM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: Howdy!
+
+Look out, it's a message!
+
+Enter to continue...
+
+
+Message: 6
+Date:    Sunday, April 23, 2023 at 23:04 PM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: This one is PRIVATE
+
+Don't look!
+
+Enter to continue...
+
+ENTER COMMAND >
+r 5
+
+Message: 5
+Date:    Sunday, April 23, 2023 at 23:04 PM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: Howdy!
+
+Look out, it's a message!
+
+ENTER COMMAND >
+r 6
+
+Message: 6
+Date:    Sunday, April 23, 2023 at 23:04 PM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: This one is PRIVATE
+
+Don't look!
+
+ENTER COMMAND >
+h
+BBS Main Menu
+
+Commands:
+  {bye,b,q,delete,d,k,deletem,dm,km,help,h,?,heard,j,list,l,listm,lm,read,r,readm,rm,send,s,sendp,sp}
+    bye (b, q)          Sign off and disconnect
+    delete (d, k)       Delete a message
+    deletem (dm, km)    Delete all your messages
+    help (h, ?)         Show help
+    heard (j)           Show heard stations log
+    list (l)            List all messages
+    listm (lm)          List only messages addressed to you
+    read (r)            Read messages
+    readm (rm)          Read only messages addressed to you
+    send (s)            Send a new message to a user
+    sendp (sp)          Send a private message to a user
+ENTER COMMAND >
+j
+Heard stations:
+ENTER COMMAND >
+d 4
+Deleted message #4
+ENTER COMMAND >
+lm
+MSG#  TO        FROM      DATE        SUBJECT
+5     KI5QKX    KI5QKX    2023-04-23  Howdy!
+6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+ENTER COMMAND >
+d3
+argument command: invalid choice: 'd3' (choose from 'bye', 'b', 'q', 'delete', 'd', 'k', 'deletem', 'dm', 'km', 'help', 'h', '?', 'heard', 'j', 'list', 'l', 'listm', 'lm', 'read', 'r', 'readm', 'rm', 'send', 's', 'sendp', 'sp')
+ENTER COMMAND >
+dm
+Delete all messages addressed to you? Y/N:
+y
+Deleted 2 messages
+ENTER COMMAND >
+l
+MSG#  TO        FROM      DATE        SUBJECT
+ENTER COMMAND >
+lm
+MSG#  TO        FROM      DATE        SUBJECT
+ENTER COMMAND >
+h
+BBS Main Menu
+
+Commands:
+  {bye,b,q,delete,d,k,deletem,dm,km,help,h,?,heard,j,list,l,listm,lm,read,r,readm,rm,send,s,sendp,sp}
+    bye (b, q)          Sign off and disconnect
+    delete (d, k)       Delete a message
+    deletem (dm, km)    Delete all your messages
+    help (h, ?)         Show help
+    heard (j)           Show heard stations log
+    list (l)            List all messages
+    listm (lm)          List only messages addressed to you
+    read (r)            Read messages
+    readm (rm)          Read only messages addressed to you
+    send (s)            Send a new message to a user
+    sendp (sp)          Send a private message to a user
+ENTER COMMAND >
+b
+Bye!
+(.venv)  rsbbs %
