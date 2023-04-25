@@ -285,6 +285,21 @@ class BBS():
         self._write_output(f"")
         self._write_output(f"{message.Message.message}")
 
+    def print_greeting(self):
+        # Show greeting
+        greeting = []
+        greeting.append(f"[RSBBS-{__version__}] listening on "
+                        f"{self.config['callsign']} ")
+
+        greeting.append(f"Welcome to {self.config['bbs_name']}, "
+                        f"{self.calling_station}")
+
+        greeting.append(self.config['banner_message'])
+
+        greeting.append("For help, enter 'h'")
+
+        self._write_output('\r\n'.join(greeting))
+
     #
     # BBS command functions
     #
@@ -442,15 +457,9 @@ class BBS():
     #
 
     def run(self):
+
         # Show greeting
-        greeting = []
-        greeting.append(f"[RSBBS-{__version__}] listening on "
-                        f"{self.config['callsign']} ")
-        greeting.append(f"Welcome to {self.config['bbs_name']}, "
-                        f"{self.calling_station}")
-        greeting.append(self.config['banner_message'])
-        greeting.append("For help, enter 'h'")
-        self._write_output('\r\n'.join(greeting))
+        self.print_greeting()
 
         # Show initial prompt to the calling user
         self._write_output(self.config['command_prompt'])
@@ -460,7 +469,7 @@ class BBS():
             try:
                 args = self.parser.parse_args(line.split())
                 args.func(args)
-            except Exception as msg:
+            except Exception as e:
                 pass
 
             # Show our prompt to the calling user again
