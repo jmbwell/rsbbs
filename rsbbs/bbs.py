@@ -72,7 +72,8 @@ class BBS():
             platformdirs.user_config_dir(appname='rsbbs', ensure_exists=True),
             'config.yaml'
         )
-        print(config_path)
+        if self._sysv_args.debug:
+            print(config_path)
         # If the file doesn't exist there, create it
         if not os.path.exists(config_path):
             config_template_path = pkg_resources.resource_filename(
