@@ -1,4 +1,0 @@
-greenlet==2.0.2
-PyYAML==6.0
-SQLAlchemy==2.0.10
-typing_extensions==4.5.0
