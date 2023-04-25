@@ -19,6 +19,7 @@
 import argparse
 import sys
 
+from rsbbs import __version__
 from rsbbs.bbs import BBS
 
 
@@ -45,9 +46,10 @@ def main():
             help=arg[5], required=arg[6])
 
     # Version arg is special:
-    sysv_parser.add_argument('-v', '--version',
-                             action='version',
-                             version=f"{sysv_parser.prog} version 0.h.-p")
+    sysv_parser.add_argument(
+        '-v', '--version',
+        action='version',
+        version=f"{sysv_parser.prog} version {__version__}")
 
     # Parse the args from the system
     sysv_args = sysv_parser.parse_args(sys.argv[1:])

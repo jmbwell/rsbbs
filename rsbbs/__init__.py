@@ -17,3 +17,4 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __all__ = ["rsbbs", "bbs", "message", "parser"]
+__version__ = '0.1.0'

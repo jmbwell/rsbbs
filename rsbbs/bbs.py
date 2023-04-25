@@ -27,6 +27,7 @@ import platformdirs
 from sqlalchemy import create_engine, delete, select, or_
 from sqlalchemy.orm import Session
 
+from rsbbs import __version__
 from rsbbs.message import Message, Base
 from rsbbs.parser import Parser
 
@@ -443,7 +444,7 @@ class BBS():
     def run(self):
         # Show greeting
         greeting = []
-        greeting.append(f"[RSBBS-1.0.0] listening on "
+        greeting.append(f"[RSBBS-{__version__}] listening on "
                         f"{self.config['callsign']} ")
         greeting.append(f"Welcome to {self.config['bbs_name']}, "
                         f"{self.calling_station}")
