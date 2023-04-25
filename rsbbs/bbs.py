@@ -30,6 +30,7 @@ from sqlalchemy.orm import Session
 from rsbbs import __version__
 from rsbbs.message import Message, Base
 from rsbbs.parser import Parser
+from rsbbs.ui import UI
 
 
 # Main BBS class
@@ -37,15 +38,14 @@ from rsbbs.parser import Parser
 class BBS():
 
     def __init__(self, sysv_args):
-
         self._sysv_args = sysv_args
 
         self.config = self._load_config(sysv_args.config_file)
 
         self.calling_station = sysv_args.calling_station.upper()
 
+        self.ui = UI(self)
         self.engine = self._init_engine()
-        self.parser = self._init_parser()
 
         logging.config.dictConfig(self.config['logging'])
 
@@ -101,104 +101,6 @@ class BBS():
         return config
 
     #
-    # BBS command parser
-    #
-
-    def _init_parser(self):
-        """Define BBS command names, aliases, help messages, action (function),
-        and any arguments.
-
-        This configures argparser's internal help and maps user commands to BBS
-        functions.
-        """
-        commands = [
-            # (name,
-            #   aliases,
-            #   helpmsg,
-            #   function,
-            #   {arg:
-            #       {arg attributes},
-            #   ...})
-            ('bye',
-                ['b', 'q'],
-                'Sign off and disconnect',
-                self.bye,
-                {}),
-
-            ('delete',
-                ['d', 'k'],
-                'Delete a message',
-                self.delete,
-                {'number':
-                    {'help':
-                        'The numeric index of the message to delete'}},),
-
-            ('deletem',
-                ['dm', 'km'],
-                'Delete all your messages',
-                self.delete_mine,
-                {}),
-
-            ('help',
-                ['h', '?'],
-                'Show help',
-                self.help,
-                {}),
-
-            ('heard',
-                ['j'],
-                'Show heard stations log',
-                self.heard,
-                {}),
-
-            ('list',
-                ['l'],
-                'List all messages',
-                self.list,
-                {}),
-
-            ('listm',
-                ['lm'],
-                'List only messages addressed to you',
-                self.list_mine,
-                {}),
-
-            ('read',
-                ['r'],
-                'Read messages',
-                self.read,
-                {'number': {'help': 'Message number to read'}}),
-
-            ('readm',
-                ['rm'],
-                'Read only messages addressed to you',
-                self.read_mine,
-                {}),
-
-            ('send',
-                ['s'],
-                'Send a new message to a user',
-                self.send,
-                {
-                    'callsign': {'help': 'Message recipient callsign'},
-                    '--subject': {'help': 'Message subject'},
-                    '--message': {'help': 'Message'},
-                },),
-
-            ('sendp',
-                ['sp'],
-                'Send a private message to a user',
-                self.send_private,
-                {
-                    'callsign': {'help': 'Message recipient callsign'},
-                    '--subject': {'help': 'Message subject'},
-                    '--message': {'help': 'Message'},
-                },),]
-
-        # Send all the commands defined above to the parser
-        return Parser(commands).parser
-
-    #
     # Database
     #
 
@@ -218,95 +120,12 @@ class BBS():
         return engine
 
     #
-    # Input and output
-    #
-
-    def _read_line(self, prompt):
-        """Read a single line of input, with an optional prompt,
-        until we get something.
-        """
-        output = None
-        while not output:
-            if prompt:
-                self._write_output(prompt)
-            input = sys.stdin.readline().strip()
-            if input != "":
-                output = input
-        return output
-
-    def _read_multiline(self, prompt):
-        """Read multiple lines of input, with an optional prompt,
-        until the user enters '/ex' by itself on a line.
-        """
-        output = []
-        if prompt:
-            self._write_output(prompt)
-        while True:
-            line = sys.stdin.readline()
-            if line.lower().strip() == "/ex":
-                break
-            else:
-                output.append(line)
-        return ''.join(output)
-
-    def _write_output(self, output):
-        """Write something to stdout."""
-        sys.stdout.write(output + '\r\n')
-
-    def print_message_list(self, messages):
-        """Print a list of messages."""
-        # Print the column headers
-        self._write_output(f"{'MSG#': <{5}} "
-                           f"{'TO': <{9}} "
-                           f"{'FROM': <{9}} "
-                           f"{'DATE': <{11}} "
-                           f"SUBJECT")
-        # Print the messages
-        for message in messages:
-            datetime_ = message.Message.datetime.strftime('%Y-%m-%d')
-            self._write_output(f"{message.Message.id: <{5}} "
-                               f"{message.Message.recipient: <{9}} "
-                               f"{message.Message.sender: <{9}} "
-                               f"{datetime_: <{11}} "
-                               f"{message.Message.subject}")
-
-    def print_message(self, message):
-        """Print an individual message."""
-        # Format the big ol' date and time string
-        datetime = message.Message.datetime.strftime(
-            '%A, %B %-d, %Y at %-H:%M %p UTC')
-        # Print the message
-        self._write_output(f"")
-        self._write_output(f"Message: {message.Message.id}")
-        self._write_output(f"Date:    {datetime}")
-        self._write_output(f"From:    {message.Message.sender}")
-        self._write_output(f"To:      {message.Message.recipient}")
-        self._write_output(f"Subject: {message.Message.subject}")
-        self._write_output(f"")
-        self._write_output(f"{message.Message.message}")
-
-    def print_greeting(self):
-        # Show greeting
-        greeting = []
-        greeting.append(f"[RSBBS-{__version__}] listening on "
-                        f"{self.config['callsign']} ")
-
-        greeting.append(f"Welcome to {self.config['bbs_name']}, "
-                        f"{self.calling_station}")
-
-        greeting.append(self.config['banner_message'])
-
-        greeting.append("For help, enter 'h'")
-
-        self._write_output('\r\n'.join(greeting))
-
-    #
     # BBS command functions
     #
 
     def bye(self, args):
         """Close the connection and exit."""
-        self._write_output("Bye!")
+        self.ui._write_output("Bye!")
         exit(0)
 
     def delete(self, args):
@@ -320,13 +139,14 @@ class BBS():
                 message = session.get(Message, args.number)
                 session.delete(message)
                 session.commit()
-                self._write_output(f"Deleted message #{args.number}")
+                self.ui._write_output(f"Deleted message #{args.number}")
             except Exception as e:
-                self._write_output(f"Unable to delete message #{args.number}")
+                self.ui._write_output(
+                    f"Unable to delete message #{args.number}")
 
     def delete_mine(self, args):
         """Delete all messages addressed to the calling station's callsign."""
-        self._write_output("Delete all messages addressed to you? Y/N:")
+        self.ui._write_output("Delete all messages addressed to you? Y/N:")
         response = sys.stdin.readline().strip()
         if response.lower() != "y":
             return
@@ -339,24 +159,24 @@ class BBS():
                     results = session.execute(statement)
                     count = len(results.all())
                     if count > 0:
-                        self._write_output(f"Deleted {count} messages")
+                        self.ui._write_output(f"Deleted {count} messages")
                         session.commit()
                     else:
-                        self._write_output(f"No messages to delete.")
+                        self.ui._write_output(f"No messages to delete.")
                 except Exception as e:
-                    self._write_output(f"Unable to delete messages: {e}")
+                    self.ui._write_output(f"Unable to delete messages: {e}")
 
     def heard(self, args):
         """Show a log of stations that have been heard by this station,
         also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
         """
-        self._write_output(f"Heard stations:")
+        self.ui._write_output(f"Heard stations:")
         result = subprocess.run(['mheard'], capture_output=True, text=True)
-        self._write_output(result.stdout)
+        self.ui._write_output(result.stdout)
 
     def help(self, args):
         """Show help."""
-        self.parser.print_help()
+        self.ui.parser.print_help()
 
     def list(self, args):
         """List all messages."""
@@ -366,7 +186,7 @@ class BBS():
                 (Message.recipient.__eq__(self.calling_station)))
                 )
             results = session.execute(statement)
-            self.print_message_list(results)
+            self.ui.print_message_list(results)
 
     def list_mine(self, args):
         """List only messages addressed to the calling station's callsign,
@@ -376,7 +196,7 @@ class BBS():
             statement = select(Message).where(
                 Message.recipient == self.calling_station)
             results = session.execute(statement)
-            self.print_message_list(results)
+            self.ui.print_message_list(results)
 
     def read(self, args):
         """Read a message.
@@ -387,7 +207,7 @@ class BBS():
         with Session(self.engine) as session:
             statement = select(Message).where(Message.id == args.number)
             result = session.execute(statement).one()
-            self.print_message(result)
+            self.ui.print_message(result)
 
     def read_mine(self, args):
         """Read all messages addressed to the calling station's callsign,
@@ -399,13 +219,13 @@ class BBS():
             messages = result.all()
             count = len(messages)
             if count > 0:
-                self._write_output(f"Reading {count} messages:")
+                self.ui._write_output(f"Reading {count} messages:")
                 for message in messages:
-                    self.print_message(message)
-                    self._write_output("Enter to continue...")
+                    self.ui.print_message(message)
+                    self.ui._write_output("Enter to continue...")
                     sys.stdin.readline()
             else:
-                self._write_output(f"No messages to read.")
+                self.ui._write_output(f"No messages to read.")
 
     def send(self, args, is_private=False):
         """Create a new message addressed to another callsign.
@@ -418,11 +238,11 @@ class BBS():
         message -- the message itself
         """
         if not args.callsign:
-            args.callsign = self._read_line("Callsign:")
+            args.callsign = self.ui._read_line("Callsign:")
         if not args.subject:
-            args.subject = self._read_line("Subject:")
+            args.subject = self.ui._read_line("Subject:")
         if not args.message:
-            args.message = self._read_multiline(
+            args.message = self.ui._read_multiline(
                 "Message - end with /ex on a single line:")
         with Session(self.engine) as session:
             session.add(Message(
@@ -434,11 +254,11 @@ class BBS():
             ))
             try:
                 session.commit()
-                self._write_output("Message saved!")
+                self.ui._write_output("Message saved!")
             except Exception as e:
                 session.rollback()
-                self._write_output("Error saving message."
-                                   "Contact the sysop for assistance.")
+                self.ui._write_output("Error saving message."
+                                      "Contact the sysop for assistance.")
 
     def send_private(self, args):
         self.send(args, is_private=True)
@@ -459,18 +279,18 @@ class BBS():
     def run(self):
 
         # Show greeting
-        self.print_greeting()
+        self.ui.print_greeting()
 
         # Show initial prompt to the calling user
-        self._write_output(self.config['command_prompt'])
+        self.ui._write_output(self.config['command_prompt'])
 
         # Parse the BBS interactive commands for the rest of time
         for line in sys.stdin:
             try:
-                args = self.parser.parse_args(line.split())
+                args = self.ui.parser.parse_args(line.split())
                 args.func(args)
             except Exception as e:
                 pass
 
             # Show our prompt to the calling user again
-            self._write_output(self.config['command_prompt'])
+            self.ui._write_output(self.config['command_prompt'])
