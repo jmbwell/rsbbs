@@ -2,13 +2,20 @@
 
 A message board for packet radio, suitable for use with ax25d. 
 
-Really Simple BBS (`rsbbs`) implements a bulletin board system that enables radio amateurs to read and store messages at your station. It is similar to the PBBS function of popular Kantronics TNCs, and it uses similar commands (`B`, `J`, `K`, `L`, `R`, `S`, `H`, etc.).
+Really Simple BBS (`rsbbs`) implements a bulletin board system that enables
+radio amateurs to read and store messages at your station. It is similar to the
+PBBS function of popular Kantronics TNCs, and it uses similar commands (`B`,
+`J`, `K`, `L`, `R`, `S`, `H`, etc.).
 
-It is designed to run on a linux system when called by `ax25d`. That is, when a user calls your station, `ax25d` answers the call and routes the connection to `rsbbs` via standard input (`stdin`). `rsbbs` responds to the user through `ax25d` via standard output (`stdout`).
+It is designed to run on a linux system when called by `ax25d`. That is, when a
+user calls your station, `ax25d` answers the call and routes the connection to
+`rsbbs` via standard input (`stdin`). `rsbbs` responds to the user through
+`ax25d` via standard output (`stdout`).
 
 ## Requirements
 
-In general, you need a linux system with ax25d configured and working. This is a python 3 application, so you will need python 3 also.
+In general, you need a linux system with ax25d configured and working. This is
+a python 3 application, so you will need python 3 also.
 
 ## Installation
 
@@ -22,7 +29,8 @@ Until I publish this thing to PyPI, you can clone it and build it yourself:
 
 ## Configuration
 
-By default, the `config.yaml` file lives in your system's user config directory, such as `~/.config/rsbbs/config.yaml`. 
+By default, the `config.yaml` file lives in your system's user config
+directory, such as `~/.config/rsbbs/config.yaml`. 
 
 To use a `config.yaml` file from a different location, use the `-f` option:
 ```
@@ -37,7 +45,8 @@ The `config.yaml` file is pretty simple and self-explanatory for now.
 
 ### With ax25d
 
-Assuming you have `ax25d` working on your system, add something like the following to your `ax25d.conf` file:
+Assuming you have `ax25d` working on your system, add something like the
+following to your `ax25d.conf` file:
 
 ```
 [KI5QKX-10 via vhf0]
@@ -46,13 +55,15 @@ default   * * * * * *  *    root    /usr/local/bin/rsbbs rsbbs -s %U
 
 Notes:
 - The installation path may vary on your system. 
-- Be sure to specify the `-s %U` parameters; this passes the ax.25 caller's callsign to the `rsbbs` application.
+- Be sure to specify the `-s %U` parameters; this passes the ax.25 caller's
+  callsign to the `rsbbs` application.
 
 See the ax25d man page for more details.
 
 ### Directly
 
-You can also run it directly, for administration purposes or just to talk to yourself. It will not accept calls when run without ax25d.
+You can also run it directly, for administration purposes or just to talk to
+yourself. It will not accept calls when run without ax25d.
 
 ```
 rsbbs -s URCALL
@@ -77,7 +88,8 @@ options:
 
 ## Operation
 
-Check out the [sample transcript](sample_transcript.txt) for a look at how it works.
+Check out the [sample transcript](sample_transcript.txt) for a look at how it
+works.
 
 ## Development
 
