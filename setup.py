@@ -35,7 +35,9 @@ setup(
     url='https://git.b-wells.us/jmbwell/rsbbs',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
-    data_files=[('config', ['config/config_default.yaml'])],
+    package_data={
+        'rsbbs': ['config_default.yaml'],
+    },
     entry_points="""
         [console_scripts]
         rsbbs=rsbbs.rsbbs:main

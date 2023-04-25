@@ -35,9 +35,9 @@ def main():
         ['-d', '--debug', 'store_true', None, 'debug',
             'Enable debugging output to stdout', False],
         ['-s', '--calling-station', 'store', 'N0CALL', 'calling_station',
-            'The callsign of the calling station', True],
-        ['-f', '--config-file', 'store', 'config.yaml', 'config_file',
-            'specify path to config.yaml file', False],
+            'Callsign of the calling station', True],
+        ['-f', '--config-file', 'store', None, 'config_file',
+            'Path to config.yaml file', False],
     ]
     for arg in args_list:
         sysv_parser.add_argument(

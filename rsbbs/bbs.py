@@ -21,6 +21,7 @@ import os
 import subprocess
 import sys
 import yaml
+import pkg_resources
 import platformdirs
 
 from sqlalchemy import create_engine, delete, select, or_
@@ -71,11 +72,11 @@ class BBS():
             platformdirs.user_config_dir(appname='rsbbs', ensure_exists=True),
             'config.yaml'
         )
+        print(config_path)
         # If the file doesn't exist there, create it
         if not os.path.exists(config_path):
-            config_template_path = os.path.join(
-                os.path.dirname(__file__),
-                'config_default.yaml')
+            config_template_path = pkg_resources.resource_filename(
+                __name__, 'config_default.yaml')
             try:
                 with open(config_template_path, 'r') as f:
                     config_template = yaml.load(f, Loader=yaml.FullLoader)
@@ -442,7 +443,7 @@ class BBS():
         # Show greeting
         greeting = []
         greeting.append(f"[RSBBS-1.0.0] listening on "
-                        f"{self.config['callsign']}")
+                        f"{self.config['callsign']} ")
         greeting.append(f"Welcome to {self.config['bbs_name']}, "
                         f"{self.calling_station}")
         greeting.append(self.config['banner_message'])

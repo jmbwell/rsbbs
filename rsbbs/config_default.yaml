@@ -5,9 +5,10 @@
 # Basic BBS info
 
 bbs_name: Really Simple BBS
-callsign: KI5QKX-10
-banner_message: KI5QKX-10 welcomes you
-command_prompt: "ENTER COMMAND >"
+callsign: N0CALL
+banner_message: Leave a message!
+
+command_prompt: ENTER COMMAND >
 
 
 # Logging
