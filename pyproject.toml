@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rsbbs"
-version = "0.1.0"
+dynamic = ["version"]
 authors = [
   { name="John Burwell", email="john@atatdotdot.com" },
 ]
@@ -31,3 +31,6 @@ repository = "https://git.b-wells.us/jmbwell/rsbbs"
 
 [tool.setuptools.package-data]
 rsbbs = ["config_default.yaml"]
+
+[tool.setuptools.dynamic]
+version = {attr = "rsbbs.__version__"}
