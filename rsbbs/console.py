@@ -18,10 +18,12 @@
 
 import sys
 
+import sqlalchemy.exc
+
 import rsbbs
 from rsbbs.commands import Commands
 from rsbbs.config import Config
-from rsbbs.controller import Base, Controller, Message
+from rsbbs.controller import Controller
 from rsbbs.parser import Parser
 
 
@@ -40,6 +42,34 @@ class Console():
     # Input and output
     #
 
+    def _read_line(self, prompt):
+        """Read a single line of input, with an optional prompt,
+        until we get something.
+        """
+        output = None
+        while not output:
+            if prompt:
+                self._write_output(prompt)
+            input = sys.stdin.readline().strip()
+            if input != "":
+                output = input
+        return output
+
+    def _read_multiline(self, prompt):
+        """Read multiple lines of input, with an optional prompt,
+        until the user enters '/ex' by itself on a line.
+        """
+        output = []
+        if prompt:
+            self._write_output(prompt)
+        while True:
+            line = sys.stdin.readline()
+            if line.lower().strip() == "/ex":
+                break
+            else:
+                output.append(line)
+        return ''.join(output)
+
     def _write_output(self, output):
         """Write something to stdout."""
         sys.stdout.write(output + '\r\n')
@@ -48,12 +78,12 @@ class Console():
         # Show greeting
         greeting = []
         greeting.append(f"[RSBBS-{rsbbs.__version__}] listening on "
-                        f"{self.config.config['callsign']} ")
+                        f"{self.config.callsign} ")
 
-        greeting.append(f"Welcome to {self.config.config['bbs_name']}, "
-                        f"{self.config.config['args'].calling_station}")
+        greeting.append(f"Welcome to {self.config.bbs_name}, "
+                        f"{self.config.calling_station}")
 
-        greeting.append(self.config.config['banner_message'])
+        greeting.append(self.config.banner_message)
 
         greeting.append("For help, enter 'h'")
 
@@ -96,11 +126,18 @@ class Console():
     #
 
     def bye(self, args):
+        """Disconnect and exit."""
         self._write_output("Bye!")
         exit(0)
 
     def delete(self, args):
-        self.controller.delete(args)
+        """Delete a message specified by ID number."""
+        if args.number:
+            try:
+                self.controller.delete(args)
+                self._write_output(f"Deleted message #{args.number}")
+            except Exception as e:
+                self._write_output(f"Message not found.")
 
     def delete_mine(self, args):
         """Delete all messages addressed to the calling station's callsign."""
@@ -123,16 +160,24 @@ class Console():
         also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
         """
         self._write_output(f"Heard stations:")
-        result = self.controller.heard(args)
-        self._write_output(result.stdout)
+        try:
+            result = self.controller.heard(args)
+            self._write_output(result.stdout)
+        except FileNotFoundError:
+            self._write_output(f"mheard utility not found.")
+        except Exception as e:
+            if self.config.debug:
+                raise
+            else:
+                self._write_output(f"Heard stations not available.")
 
     def help(self, args):
         self.parser.parser.print_help()
 
     def list(self, args):
-        """List all messages."""
+        """List all public messages and private messages to the caller."""
         result = self.controller.list(args)
-        self.print_message_list(result['result'])
+        self.print_message_list(result)
 
     def list_mine(self, args):
         """List only messages addressed to the calling station's callsign,
@@ -147,16 +192,24 @@ class Console():
         Arguments:
         number -- the message number to read
         """
-        result = self.controller.read(args)
-        self.print_message(result)
+        if args.number:
+            try:
+                result = self.controller.read(args)
+                self.print_message(result)
+            except sqlalchemy.exc.NoResultFound:
+                self._write_output(f"Message not found.")
+            except Exception as e:
+                print(e)
 
     def read_mine(self, args):
         """Read all messages addressed to the calling station's callsign,
         in sequence."""
         result = self.controller.list_mine(args)
-        if result['count'] > 0:
-            self._write_output(f"Reading {result['count']} messages:")
-            for message in result['result'].all():
+        messages = result.all()
+        count = len(messages)
+        if count > 0:
+            self._write_output(f"Reading {count} messages:")
+            for message in messages:
                 self.print_message(message)
                 self._write_output("Enter to continue...")
                 sys.stdin.readline()
@@ -173,6 +226,7 @@ class Console():
         subject -- message subject
         message -- the message itself
         """
+        print(is_private)
         if not args.callsign:
             args.callsign = self._read_line("Callsign:")
         if not args.subject:
@@ -180,21 +234,10 @@ class Console():
         if not args.message:
             args.message = self._read_multiline(
                 "Message - end with /ex on a single line:")
-        # with Session(self.engine) as session:
-        #     session.add(Message(
-        #         sender=self.calling_station.upper(),
-        #         recipient=args.callsign.upper(),
-        #         subject=args.subject,
-        #         message=args.message,
-        #         is_private=is_private
-        #     ))
-            # try:
-            #     session.commit()
-            #     self._write_output("Message saved!")
-            # except Exception as e:
-            #     session.rollback()
-            #     self._write_output("Error saving message."
-            #                           "Contact the sysop for assistance.")
+        try:
+            self.controller.send(args, is_private=is_private)
+        except Exception as e:
+            print(e)
 
     def send_private(self, args):
         self.send(args, is_private=True)
@@ -218,7 +261,7 @@ class Console():
         self.print_greeting()
 
         # Show initial prompt to the calling user
-        self._write_output(self.config.config['command_prompt'])
+        self._write_output(self.config.command_prompt)
 
         # Parse the BBS interactive commands for the rest of time
         for line in sys.stdin:
@@ -226,10 +269,10 @@ class Console():
                 args = self.parser.parser.parse_args(line.split())
                 args.func(args)
             except Exception:
-                if self.config.config['debug']:
+                if self.config.debug:
                     raise
                 else:
                     pass
 
             # Show our prompt to the calling user again
-            self._write_output(self.config.config['command_prompt'])
+            self._write_output(self.config.command_prompt)

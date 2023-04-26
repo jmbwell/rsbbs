@@ -26,12 +26,11 @@ from rsbbs.commands import Commands
 
 class BBSArgumentParser(argparse.ArgumentParser):
     # Override the error handler to prevent exiting on error
-    def error(self, message):
+    # def error(self, message):
+    #     print(message)
+    #     raise
 
-        print(message)
-        raise Exception(message)
-
-    def exit(self):
+    def exit(self, arg1, arg2):
         pass
 
 
@@ -51,7 +50,7 @@ class Parser(BBSArgumentParser):
 
         # We will create a subparser for each individual command
         subparsers = self.parser.add_subparsers(
-            title='Commands', 
+            title='Commands',
             dest='command')
 
         # Loop through the commands and add each as a subparser

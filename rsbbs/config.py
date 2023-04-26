@@ -36,6 +36,10 @@ class Config():
 
         self.config['debug'] = args.debug
         self.config['args'] = args
+        self.config['calling_station'] = args.calling_station.upper() or None
+
+    def __getattr__(self, __name: str):
+        return self.config[__name]
 
     @property
     def config_path(self):

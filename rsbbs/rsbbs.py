@@ -66,10 +66,6 @@ def main():
     # Init the contoller
     controller = Controller(config)
 
-    # # Set up commands and parser
-    # commands = Commands(controller)
-    # parser = Parser(commands)
-
     # Init the UI console
     console = Console(config, controller)
 

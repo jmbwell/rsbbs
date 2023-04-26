@@ -56,10 +56,10 @@ class Controller():
 
         The default location is the system-specific user-level data directory.
         """
-        db_path = self.config.config['db_path']
+        db_path = self.config.db_path
         self.engine = create_engine(
             'sqlite:///' + db_path,
-            echo=self.config.config['debug'])
+            echo=self.config.debug)
 
         # Create the database schema if none exists
         Base.metadata.create_all(self.engine)
@@ -75,7 +75,6 @@ class Controller():
                 message = session.get(Message, args.number)
                 session.delete(message)
                 session.commit()
-                return {}
             except Exception:
                 raise
 
@@ -84,7 +83,7 @@ class Controller():
         with Session(self.engine) as session:
             try:
                 statement = delete(Message).where(
-                    Message.recipient == self.calling_station
+                    Message.recipient == self.config.calling_station
                     ).returning(Message)
                 result = session.execute(statement)
                 count = len(result.all())
@@ -98,8 +97,9 @@ class Controller():
         also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
         """
         try:
-            result = subprocess.run(['mheard'], capture_output=True, text=True)
-            return {'result': result}
+            return subprocess.run(['mheard'], capture_output=True, text=True)
+        except FileNotFoundError:
+            raise
         except Exception:
             raise
 
@@ -107,15 +107,19 @@ class Controller():
         """List all messages."""
         with Session(self.engine) as session:
             try:
-                statement = select(Message).where(or_(
-                    (Message.is_private.is_not(False)),
-                    (Message.recipient.__eq__(
-                        self.config.config['args'].calling_station)))
+                # Using or_ and is_ etc. to distinguish from python operators
+                statement = select(Message).where(
+                    or_(
+                        (Message.is_private.is_(False)),
+                        (Message.recipient.__eq__(
+                            self.config.calling_station)))
                     )
-                result = session.execute(statement)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
             except Exception:
                 raise
-        return {'result': result}
+        return result
 
     def list_mine(self, args):
         """List only messages addressed to the calling station's callsign,
@@ -124,9 +128,11 @@ class Controller():
         with Session(self.engine) as session:
             try:
                 statement = select(Message).where(
-                    Message.recipient == self.calling_station)
-                result = session.execute(statement)
-                return {'result': result}
+                    Message.recipient == self.config.calling_station)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
+                return result
             except Exception:
                 raise
 
@@ -140,7 +146,7 @@ class Controller():
             try:
                 statement = select(Message).where(Message.id == args.number)
                 result = session.execute(statement).one()
-                return {'result': result}
+                return result
             except Exception:
                 raise
 
@@ -157,7 +163,7 @@ class Controller():
         with Session(self.engine) as session:
             try:
                 session.add(Message(
-                    sender=self.calling_station.upper(),
+                    sender=self.config.calling_station.upper(),
                     recipient=args.callsign.upper(),
                     subject=args.subject,
                     message=args.message,
