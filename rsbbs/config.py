@@ -48,6 +48,13 @@ class Config():
     def __getattr__(self, __name: str):
         return self.config[__name]
 
+    def __repr__(self):
+        repr = []
+        repr.append(f"app_name: {self.app_name}\r\n")
+        repr.append(f"config_file: {self.config_file}\r\n")
+        repr.append(yaml.dump(self.config))
+        return ''.join(repr)
+
     @property
     def config_file(self):
         # Use either the specified file or a file in a system config location

@@ -3,9 +3,9 @@
 A message board for packet radio, suitable for use with ax25d. 
 
 Really Simple BBS (`rsbbs`) implements a bulletin board system that enables
-radio amateurs to read and store messages at your station. It is similar to the
-PBBS function of popular Kantronics TNCs, and it uses similar commands (`B`,
-`J`, `K`, `L`, `R`, `S`, `H`, etc.).
+radio amateurs to read and store messages at your station. It generally adopts
+conventions common to other popular BBS systems, (`B`, `J`, `K`, `L`, `R`, `S`,
+`H`, etc.)
 
 It is designed to run on a linux system when called by `ax25d`. That is, when a
 user calls your station, `ax25d` answers the call and routes the connection to
@@ -14,32 +14,55 @@ user calls your station, `ax25d` answers the call and routes the connection to
 
 ## Requirements
 
-In general, you need a linux system with ax25d configured and working. This is
-a python 3 application, so you will need python 3 also.
+- **AX.25:** It is assumed that you have a radio connected to your host, that
+  you have configured your axports, and that ax25d can answer calls.
+- **Python 3:** As this is a python 3 application, you will need python 3 and
+  pip. 
+- **Hardware:** A system capable of running Direwolf and ax25d should be more
+  than sufficient.
 
 ## Installation
 
-Until I publish this thing to PyPI, you can clone it and build it yourself:
+Clone this repository and install it with pip:
 
-1. Clone the repo to a reasonable location.
-2. `cd` to the repo directory
-3. Run `python3 -m pip build .`
-4. Run `python3 -m pip install .`
-5. Run `rsbbs -h` to test installation and create config and data files.
+```
+git clone https://git.b-wells.us/jmbwell/rsbbs.git
+cd rsbbs
+python3 -m virtualenv .venv
+source .venv/bin/activate
+pip install .
+rsbbs -h
+```
+
+The config file will be created at first launch. 
 
 ## Configuration
 
 By default, the `config.yaml` file lives in your system's user config
-directory, such as `~/.config/rsbbs/config.yaml`. 
+directory, such as `~/.config/rsbbs/config.yaml`, as determined by the
+`platformdirs` module.
 
 To use a `config.yaml` file from a different location, use the `-f` option:
 ```
-rsbbs -f ~/config.yaml -s KI5QKX
+rsbbs -f ~/config.yaml -s <calling station's callsign>
 ```
 
-If this file is missing, `rsbbs` will create it.
+Either way, if the file is missing, `rsbbs` will create it.
 
-The `config.yaml` file is pretty simple and self-explanatory for now.
+The `config.yaml` file is pretty simple and self-explanatory for now:
+```
+bbs_name: John's Really Simple BBS
+callsign: HOSTCALL
+banner_message: Leave a message!
+command_prompt: ENTER COMMAND >
+```
+
+> Tip:
+> To show the location of the current config file (among other configuration
+> options), run:
+> ```
+> rsbbs --show-config
+> ```
 
 ## Usage
 
@@ -53,17 +76,25 @@ following to your `ax25d.conf` file:
 default   * * * * * *  *    root    /usr/local/bin/rsbbs rsbbs -s %U
 ```
 
-Notes:
-- The installation path may vary on your system. 
-- Be sure to specify the `-s %U` parameters; this passes the ax.25 caller's
-  callsign to the `rsbbs` application.
+> Notes:
+>  - Specify the full path to the `rsbbs` application.
+>  - The installation path may vary on your system. 
+>  - If you install it in a virtualenv, specify the path to `rsbbs` in that
+>    virtualenv's `/bin` directory.
+>  - Be sure to specify the `-s %U` parameter; this passes the ax.25 caller's
+>    callsign to the `rsbbs` application.
 
-See the ax25d man page for more details.
+
+See `man ax25d.conf` for more details.
 
 ### Directly
 
-You can also run it directly, for administration purposes or just to talk to
-yourself. It will not accept calls when run without ax25d.
+You can launch it from the command line on your packet station's host, and you
+can interact with it just as you would over the air.
+
+This might be useful for administration purposes or just to talk to yourself.
+It does not have a standalone mode for taking calls, however -- that's what
+ax25d is for.
 
 ```
 rsbbs -s URCALL
@@ -71,7 +102,7 @@ rsbbs -s URCALL
 
 ### Options
 
-Run `sbbs -h` to see the following help:
+Run `rsbbs -h` to see the following help:
 
 ```
 usage: rsbbs [-h] [-d] -s CALLING_STATION [-f CONFIG_FILE] [-v]
@@ -83,6 +114,7 @@ options:
                         The callsign of the calling station
   -f CONFIG_FILE, --config-file CONFIG_FILE
                         specify path to config.yaml file
+  --show-config         show the current configuration and exit
   -v, --version         show program's version number and exit
 ```
 
@@ -99,7 +131,19 @@ In general, on a macOS or linux system:
 3. Create a venv
 4. Install it in "editable" mode with `pip install -e .`
 
+For example:
+```
+git clone https://git.b-wells.us/jmbwell/rsbbs.git
+cd rsbbs
+python3 -m virtualenv .venv
+source .venv/bin/activate
+pip install -e .
+rsbbs -h
+```
+
 ## Contributing
+
+Pull requests welcome. If you're not sure where to start:
 
 1. Fork it (<https://git.b-wells.us/jmbwell/rsbbs>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)

@@ -74,6 +74,9 @@ class Console():
         """Write something to stdout."""
         sys.stdout.write(output + '\r\n')
 
+    def print_configuration(self):
+        self._write_output(repr(self.config))
+
     def print_greeting(self):
         # Show greeting
         greeting = []
@@ -257,6 +260,11 @@ class Console():
     #
 
     def run(self):
+
+        # If asked to show the config, show the config;
+        if self.config.args.show_config:
+            self.print_configuration()
+            exit(0)
 
         # Show greeting
         self.print_greeting()
