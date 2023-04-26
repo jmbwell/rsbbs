@@ -20,7 +20,11 @@ import argparse
 import sys
 
 from rsbbs import __version__
-from rsbbs.bbs import BBS
+from rsbbs.commands import Commands
+from rsbbs.config import Config
+from rsbbs.console import Console
+from rsbbs.controller import Controller
+from rsbbs.parser import Parser
 
 
 def main():
@@ -54,11 +58,23 @@ def main():
     # Parse the args from the system
     sysv_args = sysv_parser.parse_args(sys.argv[1:])
 
-    # Instantiate the BBS object
-    bbs = BBS(sysv_args)
+    # Load configuration
+    config = Config(
+           app_name='rsbbs',
+           args=sysv_args)
 
-    # Start the main BBS loop
-    bbs.run()
+    # Init the contoller
+    controller = Controller(config)
+
+    # # Set up commands and parser
+    # commands = Commands(controller)
+    # parser = Parser(commands)
+
+    # Init the UI console
+    console = Console(config, controller)
+
+    # Start the app
+    console.run()
 
 
 if __name__ == "__main__":
