@@ -29,10 +29,9 @@ class Commands():
             #   aliases,
             #   helpmsg,
             #   function,
-            #   callback,
-            #   {arg:
-            #       {arg attributes},
-            #   ...})
+            #   arg:
+            #       arg attributes...,
+            # )
             ('bye',
                 ['b', 'q'],
                 'Sign off and disconnect',
@@ -94,7 +93,7 @@ class Commands():
                 'Send a new message to a user',
                 self.responder.send,
                 {
-                    'callsign': {'help': 'Message recipient callsign'},
+                    '--callsign': {'help': 'Message recipient callsign'},
                     '--subject': {'help': 'Message subject'},
                     '--message': {'help': 'Message'},
                 },),
@@ -104,7 +103,7 @@ class Commands():
                 'Send a private message to a user',
                 self.responder.send_private,
                 {
-                    'callsign': {'help': 'Message recipient callsign'},
+                    '--callsign': {'help': 'Message recipient callsign'},
                     '--subject': {'help': 'Message subject'},
                     '--message': {'help': 'Message'},
                 },),]

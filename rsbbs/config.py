@@ -25,45 +25,52 @@ import yaml
 class Config():
 
     def __init__(self, app_name, args):
-        self._app_name = app_name
-        self._config_file_path = args.config_file
+        self.app_name = app_name
+        self._argv_config_file = args.config_file
 
         self._load_config()
 
+        # Put the messages db file in the system's user data directory
         self.config['db_path'] = os.path.join(
-            platformdirs.user_data_dir(appname=app_name, ensure_exists=True),
+            platformdirs.user_data_dir(
+                appname=self.app_name,
+                ensure_exists=True),
             'messages.db')
 
-        self.config['debug'] = args.debug
+        # Grab some config from the command line for convenience
         self.config['args'] = args
         self.config['calling_station'] = args.calling_station.upper() or None
+        self.config['debug'] = args.debug
 
+    # The main thing people want from Config is config values, so let's pretend
+    # everything anyone asks of Config that isn't otherwise defined is probably
+    # a config value they want
     def __getattr__(self, __name: str):
         return self.config[__name]
 
     @property
-    def config_path(self):
+    def config_file(self):
         # Use either the specified file or a file in a system config location
-        config_path = self._config_file_path or os.path.join(
+        config_file = self._argv_config_file or os.path.join(
             platformdirs.user_config_dir(
-                appname=self._app_name,
+                appname=self.app_name,
                 ensure_exists=True),
             'config.yaml'
         )
-        return config_path
+        return config_file
 
     def _init_config_file(self):
         # If the file doesn't exist there, create it from the default file
         # included in the package
-        if not os.path.exists(self.config_path):
-            config_default_file_path = pkg_resources.resource_filename(
+        if not os.path.exists(self.config_file):
+            config_default_file = pkg_resources.resource_filename(
                 __name__,
                 'config_default.yaml')
             try:
-                with open(config_default_file_path, 'r') as f:
-                    config_template = yaml.load(f, Loader=yaml.FullLoader)
-                with open(self.config_path, 'w') as f:
-                    yaml.dump(config_template, f)
+                with open(config_default_file, 'r') as f:
+                    config_default = yaml.load(f, Loader=yaml.FullLoader)
+                with open(self.config_file, 'w') as f:
+                    yaml.dump(config_default, f)
             except Exception as e:
                 print(f"Error creating configuration file: {e}")
                 exit(1)
@@ -77,7 +84,7 @@ class Config():
         """
         # Load it
         try:
-            with open(self.config_path, 'r') as f:
+            with open(self.config_file, 'r') as f:
                 self.config = yaml.load(f, Loader=yaml.FullLoader)
         except Exception as e:
             print(f"Error loading configuration file: {e}")

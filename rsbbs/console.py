@@ -174,7 +174,7 @@ class Console():
                 self._write_output(f"Heard stations not available.")
 
     def help(self, args):
-        self.parser.parser.print_help()
+        self.parser.print_help()
 
     def list(self, args):
         """List all public messages and private messages to the caller."""
@@ -267,7 +267,7 @@ class Console():
         # Parse the BBS interactive commands for the rest of time
         for line in sys.stdin:
             try:
-                args = self.parser.parser.parse_args(line.split())
+                args = self.parser.parse_args(line.split())
                 args.func(args)
             except Exception:
                 if self.config.debug:

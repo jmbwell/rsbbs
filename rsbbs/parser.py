@@ -21,15 +21,12 @@ import argparse
 from rsbbs.commands import Commands
 
 
-# We want to override the error and exit methods of ArgumentParser
-# to prevent it exiting unexpectedly or spewing error data over the air
-
 class BBSArgumentParser(argparse.ArgumentParser):
-    # Override the error handler to prevent exiting on error
+    # Override the error handler to prevent spewing error cruft over the air
     # def error(self, message):
     #     print(message)
-    #     raise
 
+    # Override the exit handler to prevent disconnecting unexpectedly
     def exit(self, arg1, arg2):
         pass
 
@@ -37,9 +34,17 @@ class BBSArgumentParser(argparse.ArgumentParser):
 class Parser(BBSArgumentParser):
 
     def __init__(self, commands: Commands):
-        self.init_parser(commands)
+        self._init_parser(commands)
 
-    def init_parser(self, commands):
+    # The only thing anyone should ever access from Parser is its parser
+    # attribute, so let's save everyone a step.
+    def __getattribute__(self, attr):
+        try:
+            return object.__getattribute__(self, attr)
+        except AttributeError:
+            return getattr(self.parser, attr)
+
+    def _init_parser(self, commands):
         # Root parser for BBS commands
         self.parser = BBSArgumentParser(
             description='BBS Main Menu',
@@ -55,11 +60,14 @@ class Parser(BBSArgumentParser):
 
         # Loop through the commands and add each as a subparser
         for name, aliases, help_msg, func, arguments in commands.commands:
+            # Add the command attributes
             subparser = subparsers.add_parser(
                 name,
                 aliases=aliases,
                 help=help_msg,
             )
+            # Add the command parameters
             for arg_name, options in arguments.items():
                 subparser.add_argument(arg_name, **options)
+            # Trick to pass a function to call when the command is entered
             subparser.set_defaults(func=func)

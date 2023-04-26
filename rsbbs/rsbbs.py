@@ -30,7 +30,7 @@ from rsbbs.parser import Parser
 def main():
 
     # Parse and handle the system invocation arguments
-    sysv_parser = argparse.ArgumentParser(
+    argv_parser = argparse.ArgumentParser(
         description=("The BBS for ax.25 and packet radio "
                      "that is really simple."))
 
@@ -45,23 +45,23 @@ def main():
             'Path to config.yaml file', False],
     ]
     for arg in args_list:
-        sysv_parser.add_argument(
+        argv_parser.add_argument(
             arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4],
             help=arg[5], required=arg[6])
 
     # Version arg is special:
-    sysv_parser.add_argument(
+    argv_parser.add_argument(
         '-v', '--version',
         action='version',
-        version=f"{sysv_parser.prog} version {__version__}")
+        version=f"{argv_parser.prog} version {__version__}")
 
     # Parse the args from the system
-    sysv_args = sysv_parser.parse_args(sys.argv[1:])
+    argv_args = argv_parser.parse_args(sys.argv[1:])
 
     # Load configuration
     config = Config(
            app_name='rsbbs',
-           args=sysv_args)
+           args=argv_args)
 
     # Init the contoller
     controller = Controller(config)
