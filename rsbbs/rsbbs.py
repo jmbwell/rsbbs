@@ -48,7 +48,7 @@ def main():
         argv_parser.add_argument(
             arg[0], arg[1], action=arg[2], default=arg[3], dest=arg[4],
             help=arg[5], required=arg[6])
-        
+
     group = argv_parser.add_mutually_exclusive_group(required=True)
 
     # Show config option:

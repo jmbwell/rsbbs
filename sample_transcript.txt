@@ -1,6 +1,25 @@
-[RSBBS-1.0.0] listening on KI5QKX-10 
-Welcome to Really Simple BBS, KI5QKX
-KI5QKX-10 welcomes you
+(.venv)  rsbbs % rsbbs
+usage: rsbbs [-h] [-d] [-f CONFIG_FILE] (--show-config | -s CALLING_STATION) [-v]
+rsbbs: error: one of the arguments --show-config -s/--calling-station is required
+
+(.venv)  rsbbs % rsbbs -h
+usage: rsbbs [-h] [-d] [-f CONFIG_FILE] (--show-config | -s CALLING_STATION) [-v]
+
+The BBS for ax.25 and packet radio that is really simple.
+
+options:
+  -h, --help            show this help message and exit
+  -d, --debug           Enable debugging output to stdout
+  -f CONFIG_FILE, --config-file CONFIG_FILE
+                        Path to config.yaml file
+  --show-config         Show the configuration and exit
+  -s CALLING_STATION, --calling-station CALLING_STATION
+                        Callsign of the calling station
+  -v, --version         show program's version number and exit
+(.venv)  rsbbs % rsbbs -s KI5QKX
+[RSBBS-0.2.0] listening on KI5QKX 
+Welcome to John's Really Simple BBS, KI5QKX
+Leave a message!
 For help, enter 'h'
 ENTER COMMAND >
 h
@@ -20,77 +39,80 @@ Commands:
     send (s)            Send a new message to a user
     sendp (sp)          Send a private message to a user
 ENTER COMMAND >
-s ki5qkx
-Subject:
-Howdy!
-Message - end with /ex on a single line:
-Look out, it's a message!
-/ex
-Message saved!
+l
+MSG#  TO        FROM      DATE        SUBJECT
+1     KI5QKX    KI5QKX    2023-04-26  Test
+2     TEST      KI5QKX    2023-04-26  subject
 ENTER COMMAND >
-sp ki5qkx
-Subject:
-This one is PRIVATE
-Message - end with /ex on a single line:
-Don't look!
-/ex
-Message saved!
+r 1
+
+Message: 1
+Date:    Wednesday, April 26, 2023 at 2:45 AM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: Test
+
+Test
+
+ENTER COMMAND >
+r 2
+
+Message: 2
+Date:    Wednesday, April 26, 2023 at 2:45 AM UTC
+From:    KI5QKX
+To:      TEST
+Subject: subject
+
+message
+/
+.ex
+
 ENTER COMMAND >
 l
 MSG#  TO        FROM      DATE        SUBJECT
-5     KI5QKX    KI5QKX    2023-04-23  Howdy!
-6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+1     KI5QKX    KI5QKX    2023-04-26  Test
+2     TEST      KI5QKX    2023-04-26  subject
 ENTER COMMAND >
-lm 
+d 1
+Deleted message #1
+ENTER COMMAND >
+dm
+Delete all messages addressed to you? Y/N:
+y
+No messages to delete.
+ENTER COMMAND >
+l
 MSG#  TO        FROM      DATE        SUBJECT
-5     KI5QKX    KI5QKX    2023-04-23  Howdy!
-6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+2     TEST      KI5QKX    2023-04-26  subject
 ENTER COMMAND >
-rm
-Reading 2 messages:
+d 2
+Deleted message #2
+ENTER COMMAND >
+l
+MSG#  TO        FROM      DATE        SUBJECT
+ENTER COMMAND >
+s ki5qkx
+Callsign:
+ki5qkx
+Subject:
+Howdy!
+Message - end with /ex on a single line:
+Hi there!
+/ex
+ENTER COMMAND >
+l
+MSG#  TO        FROM      DATE        SUBJECT
+1     KI5QKX    KI5QKX    2023-04-26  Howdy!
+ENTER COMMAND >
+r 1
 
-Message: 5
-Date:    Sunday, April 23, 2023 at 23:04 PM UTC
+Message: 1
+Date:    Wednesday, April 26, 2023 at 5:01 AM UTC
 From:    KI5QKX
 To:      KI5QKX
 Subject: Howdy!
 
-Look out, it's a message!
-
-Enter to continue...
-
-
-Message: 6
-Date:    Sunday, April 23, 2023 at 23:04 PM UTC
-From:    KI5QKX
-To:      KI5QKX
-Subject: This one is PRIVATE
-
-Don't look!
-
-Enter to continue...
-
-ENTER COMMAND >
-r 5
-
-Message: 5
-Date:    Sunday, April 23, 2023 at 23:04 PM UTC
-From:    KI5QKX
-To:      KI5QKX
-Subject: Howdy!
-
-Look out, it's a message!
-
-ENTER COMMAND >
-r 6
-
-Message: 6
-Date:    Sunday, April 23, 2023 at 23:04 PM UTC
-From:    KI5QKX
-To:      KI5QKX
-Subject: This one is PRIVATE
-
-Don't look!
+Hi there!
 
 ENTER COMMAND >
 h
@@ -110,29 +132,82 @@ Commands:
     send (s)            Send a new message to a user
     sendp (sp)          Send a private message to a user
 ENTER COMMAND >
-j
-Heard stations:
+rm
+Reading 1 messages:
+
+Message: 1
+Date:    Wednesday, April 26, 2023 at 5:01 AM UTC
+From:    KI5QKX
+To:      KI5QKX
+Subject: Howdy!
+
+Hi there!
+
+Enter to continue...
+
 ENTER COMMAND >
-d 4
-Deleted message #4
+h
+BBS Main Menu
+
+Commands:
+  {bye,b,q,delete,d,k,deletem,dm,km,help,h,?,heard,j,list,l,listm,lm,read,r,readm,rm,send,s,sendp,sp}
+    bye (b, q)          Sign off and disconnect
+    delete (d, k)       Delete a message
+    deletem (dm, km)    Delete all your messages
+    help (h, ?)         Show help
+    heard (j)           Show heard stations log
+    list (l)            List all messages
+    listm (lm)          List only messages addressed to you
+    read (r)            Read messages
+    readm (rm)          Read only messages addressed to you
+    send (s)            Send a new message to a user
+    sendp (sp)          Send a private message to a user
+ENTER COMMAND >
+sp
+Callsign:
+ki5qkx
+Subject:
+Testing Private
+Message - end with /ex on a single line:
+Don't look!
+/ex
+ENTER COMMAND >
+l
+MSG#  TO        FROM      DATE        SUBJECT
+1     KI5QKX    KI5QKX    2023-04-26  Howdy!
+2     KI5QKX    KI5QKX    2023-04-26  Testing Private
 ENTER COMMAND >
 lm
 MSG#  TO        FROM      DATE        SUBJECT
-5     KI5QKX    KI5QKX    2023-04-23  Howdy!
-6     KI5QKX    KI5QKX    2023-04-23  This one is PRIVATE
+1     KI5QKX    KI5QKX    2023-04-26  Howdy!
+2     KI5QKX    KI5QKX    2023-04-26  Testing Private
 ENTER COMMAND >
-d3
-argument command: invalid choice: 'd3' (choose from 'bye', 'b', 'q', 'delete', 'd', 'k', 'deletem', 'dm', 'km', 'help', 'h', '?', 'heard', 'j', 'list', 'l', 'listm', 'lm', 'read', 'r', 'readm', 'rm', 'send', 's', 'sendp', 'sp')
+h
+BBS Main Menu
+
+Commands:
+  {bye,b,q,delete,d,k,deletem,dm,km,help,h,?,heard,j,list,l,listm,lm,read,r,readm,rm,send,s,sendp,sp}
+    bye (b, q)          Sign off and disconnect
+    delete (d, k)       Delete a message
+    deletem (dm, km)    Delete all your messages
+    help (h, ?)         Show help
+    heard (j)           Show heard stations log
+    list (l)            List all messages
+    listm (lm)          List only messages addressed to you
+    read (r)            Read messages
+    readm (rm)          Read only messages addressed to you
+    send (s)            Send a new message to a user
+    sendp (sp)          Send a private message to a user
 ENTER COMMAND >
 dm
 Delete all messages addressed to you? Y/N:
 y
 Deleted 2 messages
 ENTER COMMAND >
-l
+lm
 MSG#  TO        FROM      DATE        SUBJECT
 ENTER COMMAND >
-lm
+l
 MSG#  TO        FROM      DATE        SUBJECT
 ENTER COMMAND >
 h
@@ -154,4 +229,3 @@ Commands:
 ENTER COMMAND >
 b
 Bye!
-(.venv)  rsbbs %
