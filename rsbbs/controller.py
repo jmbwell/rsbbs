@@ -85,10 +85,11 @@ class Controller():
                 statement = delete(Message).where(
                     Message.recipient == self.config.calling_station
                     ).returning(Message)
-                result = session.execute(statement)
-                count = len(result.all())
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
                 session.commit()
-                return {'count': count, 'result': result}
+                return result
             except Exception:
                 raise
 

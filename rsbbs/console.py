@@ -148,8 +148,10 @@ class Console():
         else:
             try:
                 result = self.controller.delete_mine(args)
-                if result['count'] > 0:
-                    self._write_output(f"Deleted {result['count']} messages")
+                messages = result.all()
+                count = len(messages)
+                if count > 0:
+                    self._write_output(f"Deleted {count} messages")
                 else:
                     self._write_output(f"No messages to delete.")
             except Exception as e:
@@ -226,7 +228,6 @@ class Console():
         subject -- message subject
         message -- the message itself
         """
-        print(is_private)
         if not args.callsign:
             args.callsign = self._read_line("Callsign:")
         if not args.subject:
@@ -252,7 +253,7 @@ class Console():
         """
 
     #
-    # Main run method
+    # Main input loop
     #
 
     def run(self):
