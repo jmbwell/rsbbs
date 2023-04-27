@@ -48,6 +48,7 @@ class Config():
     def __getattr__(self, __name: str):
         return self.config[__name]
 
+    # Format the config for display
     def __repr__(self):
         repr = []
         repr.append(f"app_name: {self.app_name}\r\n")

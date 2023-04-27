@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import os
 import sys
-
-import sqlalchemy.exc
 
 import rsbbs
 from rsbbs.config import Config
@@ -133,22 +130,6 @@ class Console():
                               f"{message.Message.sender: <{9}} "
                               f"{datetime_: <{11}} "
                               f"{message.Message.subject}")
-
-    #
-    # Command functions
-    #
-
-    def send_private(self, args):
-        self.send(args, is_private=True)
-        """Send a message visible only to the recipient callsign.
-
-        Required arguments:
-        callsign -- the recipient's callsign
-
-        Optional arguments:
-        subject -- message subject
-        message -- the message itself
-        """
 
     #
     # Main input loop

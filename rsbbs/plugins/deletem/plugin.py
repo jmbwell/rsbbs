@@ -16,34 +16,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sqlalchemy
+
 from rsbbs.console import Console
+from rsbbs.models import Message
 from rsbbs.parser import Parser
 
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='deletem',
             aliases=['dm', 'km'],
             help='Delete all messages addressed to you')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
-        """Delete all messages addressed to the calling station's callsign."""
-        response = self.api.read_line(
-            "Delete all messages addressed to you? Y/N:")
-        if response.lower() != "y":
-            return
-        else:
+    def delete_mine(self) -> None:
+        with self.api.controller.session() as session:
             try:
-                result = self.api.controller.delete_mine(args)
+                statement = sqlalchemy.delete(Message).where(
+                    Message.recipient == self.api.config.calling_station
+                    ).returning(Message)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
+                session.commit()
                 messages = result.all()
                 count = len(messages)
                 if count > 0:
@@ -52,3 +56,10 @@ class Plugin():
                     self.api.write_output(f"No messages to delete.")
             except Exception as e:
                 self.api.write_output(f"Unable to delete messages: {e}")
+
+    def run(self, args) -> None:
+        """Delete all messages addressed to the calling station's callsign."""
+        response = self.api.read_line(
+            "Delete all messages addressed to you? Y/N:")
+        if response.lower() == "y":
+            self.delete_mine()

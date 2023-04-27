@@ -16,21 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import sqlalchemy
-
 from rsbbs.console import Console
+from rsbbs.models import Message
 from rsbbs.parser import Parser
 
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='send',
             aliases=['s'],
@@ -40,7 +39,22 @@ class Plugin():
         subparser.add_argument('--message', help='Message')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def send(self, args, is_private=False) -> None:
+        with self.api.controller.session() as session:
+            try:
+                session.add(Message(
+                    sender=self.api.config.calling_station.upper(),
+                    recipient=args.callsign.upper(),
+                    subject=args.subject,
+                    message=args.message,
+                    is_private=is_private
+                ))
+                session.commit()
+            except Exception:
+                session.rollback()
+                raise
+
+    def run(self, args) -> None:
         """Create a new message addressed to another callsign.
 
         Required arguments:
@@ -58,6 +72,6 @@ class Plugin():
             args.message = self.api.read_multiline(
                 "Message - end with /ex on a single line:")
         try:
-            self.api.controller.send(args, is_private=False)
+            self.send(args)
         except Exception as e:
             print(e)

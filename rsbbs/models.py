@@ -16,27 +16,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from rsbbs.console import Console
-from rsbbs.parser import Parser
+from datetime import datetime, timezone
+
+from sqlalchemy import Boolean, DateTime, String
+
+from sqlalchemy.orm import DeclarativeBase, Mapped
+from sqlalchemy.orm import mapped_column
 
 
-class Plugin():
+class Base(DeclarativeBase):
+    pass
 
-    def __init__(self, api: Console) -> None:
-        self.api = api
-        self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser) -> None:
-        subparser = parser.subparsers.add_parser(
-            name='help',
-            aliases=['h', '?'],
-            help='Show help')
-        subparser.set_defaults(func=self.run)
-
-    def run(self, args) -> None:
-        """Show a log of stations that have been heard by this station,
-        also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
-        """
-        self.api.parser.print_help()
+class Message(Base):
+    __tablename__ = 'message'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sender: Mapped[str] = mapped_column(String)
+    recipient: Mapped[str] = mapped_column(String)
+    subject: Mapped[str] = mapped_column(String)
+    message: Mapped[str] = mapped_column(String)
+    datetime: Mapped[DateTime] = mapped_column(
+        DateTime, default=datetime.now(timezone.utc))
+    is_private: Mapped[bool] = mapped_column(Boolean)

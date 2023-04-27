@@ -19,28 +19,41 @@
 import sqlalchemy
 
 from rsbbs.console import Console
+from rsbbs.models import Message
 from rsbbs.parser import Parser
 
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='readm',
             aliases=['rm'],
             help='Read all messages addressed to you')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def list_mine(self, args) -> sqlalchemy.ChunkedIteratorResult:
+        with self.api.controller.session() as session:
+            try:
+                statement = sqlalchemy.select(Message).where(
+                    Message.recipient == self.api.config.calling_station)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
+                return result
+            except Exception:
+                raise
+
+    def run(self, args) -> None:
         """Read all messages addressed to the calling station's callsign,
         in sequence."""
-        result = self.api.controller.list_mine(args)
+        result = self.list_mine(args)
         messages = result.all()
         count = len(messages)
         if count > 0:

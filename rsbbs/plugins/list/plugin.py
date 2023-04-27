@@ -16,26 +16,47 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sqlalchemy
+
 from rsbbs.console import Console
+from rsbbs.models import Message
 from rsbbs.parser import Parser
 
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='list',
             aliases=['l'],
             help='List all available messages')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def list(self, args) -> sqlalchemy.ChunkedIteratorResult:
+        """List all messages."""
+        with self.api.controller.session() as session:
+            try:
+                # Using or_ and is_ etc. to distinguish from python operators
+                statement = sqlalchemy.select(Message).where(
+                    sqlalchemy.or_(
+                        (Message.is_private.is_(False)),
+                        (Message.recipient.__eq__(
+                            self.api.config.calling_station)))
+                    )
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
+            except Exception:
+                raise
+        return result
+
+    def run(self, args) -> None:
         """List all public messages and messages private to the caller."""
-        result = self.api.controller.list(args)
+        result = self.list(args)
         self.api.print_message_list(result)

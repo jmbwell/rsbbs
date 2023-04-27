@@ -22,20 +22,20 @@ from rsbbs.parser import Parser
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='bye',
             aliases=['b', 'q'],
             help='Sign off and disconnect')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def run(self, args) -> None:
         """Disconnect and exit."""
         self.api.write_output("Bye!")
         exit(0)

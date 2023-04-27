@@ -24,20 +24,20 @@ from rsbbs.parser import Parser
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='heard',
             aliases=['j'],
             help='Show heard stations log')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def run(self, args) -> None:
         """Show a log of stations that have been heard by this station,
         also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
         """

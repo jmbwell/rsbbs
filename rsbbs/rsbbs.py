@@ -23,7 +23,6 @@ from rsbbs import __version__
 from rsbbs.config import Config
 from rsbbs.console import Console
 from rsbbs.controller import Controller
-from rsbbs.parser import Parser
 
 
 def parse_args():

@@ -17,20 +17,22 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sqlalchemy
+import sqlalchemy.exc
 
 from rsbbs.console import Console
+from rsbbs.models import Message
 from rsbbs.parser import Parser
 
 
 class Plugin():
 
-    def __init__(self, api: Console):
+    def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
         if api.config.debug:
             print(f"Plugin {__name__} loaded")
 
-    def init_parser(self, parser: Parser):
+    def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
             name='read',
             aliases=['r'],
@@ -38,17 +40,23 @@ class Plugin():
         subparser.add_argument('number', help='Message number to read')
         subparser.set_defaults(func=self.run)
 
-    def run(self, args):
+    def read_message(self, number) -> None:
+        with self.api.controller.session() as session:
+            try:
+                statement = sqlalchemy.select(Message).where(
+                    Message.id == number)
+                result = session.execute(statement).one()
+                self.api.print_message(result)
+            except sqlalchemy.exc.NoResultFound:
+                self.api.write_output(f"Message not found.")
+            except Exception as e:
+                print(e)
+
+    def run(self, args) -> None:
         """Read a message.
 
         Arguments:
         number -- the message number to read
         """
         if args.number:
-            try:
-                result = self.api.controller.read(args)
-                self.api.print_message(result)
-            except sqlalchemy.exc.NoResultFound:
-                self.api.write_output(f"Message not found.")
-            except Exception as e:
-                print(e)
+            self.read_message(args.number)
