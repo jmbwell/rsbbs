@@ -26,8 +26,7 @@ from rsbbs.controller import Controller
 from rsbbs.parser import Parser
 
 
-def main():
-
+def parse_args():
     # Parse and handle the system invocation arguments
     argv_parser = argparse.ArgumentParser(
         description=("The BBS for ax.25 and packet radio "
@@ -74,12 +73,15 @@ def main():
         version=f"{argv_parser.prog} version {__version__}")
 
     # Parse the args from the system
-    argv_args = argv_parser.parse_args(sys.argv[1:])
+    return argv_parser.parse_args(sys.argv[1:])
+
+
+def main():
 
     # Load configuration
     config = Config(
            app_name='rsbbs',
-           args=argv_args)
+           args=parse_args())
 
     # Init the controller
     controller = Controller(config)
