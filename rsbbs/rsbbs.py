@@ -20,7 +20,6 @@ import argparse
 import sys
 
 from rsbbs import __version__
-from rsbbs.commands import Commands
 from rsbbs.config import Config
 from rsbbs.console import Console
 from rsbbs.controller import Controller
@@ -82,7 +81,7 @@ def main():
            app_name='rsbbs',
            args=argv_args)
 
-    # Init the contoller
+    # Init the controller
     controller = Controller(config)
 
     # Init the UI console

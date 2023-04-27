@@ -16,13 +16,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__all__ = ['config', 'console',
-           'controller', 'parser', 'pluginloader']
+from rsbbs.console import Console
+from rsbbs.parser import Parser
 
-__version__ = "0.2.0"
 
-# from .config import Config
-# from .console import Console
-# from .controller import Controller
-# from .parser import Parser
-# from .pluginloader import PluginLoader
+class Plugin():
+
+    def __init__(self, api: Console):
+        self.api = api
+        self.init_parser(api.parser)
+        if api.config.debug:
+            print(f"Plugin {__name__} loaded")
+
+    def init_parser(self, parser: Parser):
+        subparser = parser.subparsers.add_parser(
+            name='bye',
+            aliases=['b', 'q'],
+            help='Sign off and disconnect')
+        subparser.set_defaults(func=self.run)
+
+    def run(self, args):
+        """Disconnect and exit."""
+        self.api.write_output("Bye!")
+        exit(0)

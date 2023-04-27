@@ -18,8 +18,6 @@
 
 import argparse
 
-from rsbbs.commands import Commands
-
 
 class BBSArgumentParser(argparse.ArgumentParser):
     # Override the error handler to prevent spewing error cruft over the air
@@ -33,8 +31,8 @@ class BBSArgumentParser(argparse.ArgumentParser):
 
 class Parser(BBSArgumentParser):
 
-    def __init__(self, commands: Commands):
-        self._init_parser(commands)
+    def __init__(self):
+        self._init_parser()
 
     # The only thing anyone should ever access from Parser is its parser
     # attribute, so let's save everyone a step.
@@ -44,7 +42,7 @@ class Parser(BBSArgumentParser):
         except AttributeError:
             return getattr(self.parser, attr)
 
-    def _init_parser(self, commands):
+    def _init_parser(self):
         # Root parser for BBS commands
         self.parser = BBSArgumentParser(
             description='BBS Main Menu',
@@ -54,20 +52,9 @@ class Parser(BBSArgumentParser):
         )
 
         # We will create a subparser for each individual command
-        subparsers = self.parser.add_subparsers(
+        self.subparsers = self.parser.add_subparsers(
             title='Commands',
             dest='command')
 
-        # Loop through the commands and add each as a subparser
-        for name, aliases, help_msg, func, arguments in commands.commands:
-            # Add the command attributes
-            subparser = subparsers.add_parser(
-                name,
-                aliases=aliases,
-                help=help_msg,
-            )
-            # Add the command parameters
-            for arg_name, options in arguments.items():
-                subparser.add_argument(arg_name, **options)
-            # Trick to pass a function to call when the command is entered
-            subparser.set_defaults(func=func)
+        # Plugins will then add a subparser for each command, so we're done
+        # here

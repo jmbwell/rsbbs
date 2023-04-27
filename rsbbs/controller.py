@@ -93,17 +93,6 @@ class Controller():
             except Exception:
                 raise
 
-    def heard(self, args):
-        """Show a log of stations that have been heard by this station,
-        also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
-        """
-        try:
-            return subprocess.run(['mheard'], capture_output=True, text=True)
-        except FileNotFoundError:
-            raise
-        except Exception:
-            raise
-
     def list(self, args):
         """List all messages."""
         with Session(self.engine) as session:
