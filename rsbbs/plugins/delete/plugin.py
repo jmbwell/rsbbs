@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+
 import sqlalchemy
 import sqlalchemy.exc
 
@@ -29,8 +31,7 @@ class Plugin():
     def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
+        logging.info(f"plugin {__name__} loaded")
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
@@ -48,10 +49,11 @@ class Plugin():
                 session.delete(message)
                 session.commit()
                 self.api.write_output(f"Deleted message #{number}")
+                logging.info(f"deleted message {number}")
             except sqlalchemy.exc.NoResultFound:
                 self.api.write_output(f"Message not found.")
             except Exception as e:
-                print(e)
+                logging.error(e)
 
     def run(self, args) -> None:
         """Delete a message.

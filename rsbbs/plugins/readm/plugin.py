@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import sqlalchemy
 
 from rsbbs.console import Console
@@ -28,8 +29,7 @@ class Plugin():
     def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
+        logging.info(f"plugin {__name__} loaded")
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
@@ -46,6 +46,7 @@ class Plugin():
                 result = session.execute(
                     statement,
                     execution_options={"prebuffer_rows": True})
+                logging.info(f"read message")
                 return result
             except Exception:
                 raise

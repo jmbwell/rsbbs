@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
+
 from rsbbs.console import Console
 from rsbbs.models import Message
 from rsbbs.parser import Parser
@@ -26,8 +28,7 @@ class Plugin():
     def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
+        logging.info(f"plugin {__name__} loaded")
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
@@ -50,7 +51,9 @@ class Plugin():
                     is_private=is_private
                 ))
                 session.commit()
-            except Exception:
+                logging.info(f"sent message to {args.callsign.upper()}")
+            except Exception as e:
+                logging.error(f"error sending message: {e}")
                 session.rollback()
                 raise
 

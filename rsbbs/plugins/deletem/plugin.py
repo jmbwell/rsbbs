@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import sqlalchemy
 
 from rsbbs.console import Console
@@ -28,8 +29,7 @@ class Plugin():
     def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
+        logging.info(f"plugin {__name__} loaded")
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
@@ -52,6 +52,7 @@ class Plugin():
                 count = len(messages)
                 if count > 0:
                     self.api.write_output(f"Deleted {count} messages")
+                    logging.info(f"deleted {count} messages")
                 else:
                     self.api.write_output(f"No messages to delete.")
             except Exception as e:

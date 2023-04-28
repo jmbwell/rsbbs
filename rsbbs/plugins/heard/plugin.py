@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import subprocess
 
 from rsbbs.console import Console
@@ -27,8 +28,7 @@ class Plugin():
     def __init__(self, api: Console) -> None:
         self.api = api
         self.init_parser(api.parser)
-        if api.config.debug:
-            print(f"Plugin {__name__} loaded")
+        logging.info("plugin {__name__} loaded")
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
@@ -45,6 +45,7 @@ class Plugin():
         try:
             result = subprocess.run(['mheard'], capture_output=True, text=True)
             self.api.write_output(result.stdout)
+            logging.info("queried heard log")
         except FileNotFoundError:
             self.api.write_output(f"mheard utility not found.")
         except Exception as e:

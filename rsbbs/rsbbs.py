@@ -17,12 +17,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import argparse
+import logging
 import sys
 
 from rsbbs import __version__
 from rsbbs.config import Config
 from rsbbs.console import Console
 from rsbbs.controller import Controller
+from rsbbs.logging import Formatter
 
 
 def parse_args():
@@ -47,6 +49,14 @@ def parse_args():
             help=arg[5], required=arg[6])
 
     group = argv_parser.add_mutually_exclusive_group(required=True)
+
+    # Log level:
+    group.add_argument(
+        '--log-level',
+        action='store',
+        default='ERROR',
+        dest='log_level',
+        help="Logging level")
 
     # Show config option:
     group.add_argument(
@@ -77,10 +87,31 @@ def parse_args():
 
 def main():
 
+    # Grab the invocation arguments
+    args = parse_args()
+
+    # Start logging
+    if args.debug:
+        log_level = logging.DEBUG
+    else:
+        log_level = getattr(logging, args.log_level.upper())
+
+    logging.basicConfig(format='%(asctime)s %(message)s',
+                        level=log_level)
+    logging.info(f"{__name__} started")
+
     # Load configuration
     config = Config(
            app_name='rsbbs',
-           args=parse_args())
+           args=args)
+
+    # Add the calling station to the logs
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    handler.setFormatter(Formatter(config.calling_station))
+    logger.addHandler(handler)
+
+    logger.info("connected")
 
     # Init the controller
     controller = Controller(config)
@@ -90,6 +121,8 @@ def main():
 
     # Start the app
     console.run()
+
+    logging.info(f"{__name__} exiting")
 
 
 if __name__ == "__main__":
