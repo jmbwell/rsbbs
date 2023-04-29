@@ -40,4 +40,4 @@ class Plugin():
         """Disconnect and exit."""
         self.api.write_output("Bye!")
         logging.info(f"{__name__} exiting")
-        exit(0)
+        self.api.disconnect()

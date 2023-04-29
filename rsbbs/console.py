@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import sys
 
 import rsbbs
@@ -41,6 +42,10 @@ class Console():
     #
     # Input and output
     #
+
+    def disconnect(self) -> None:
+        logging.info("caller disconnected")
+        exit(0)
 
     def read_enter(self, prompt) -> None:
         """Wait for the user to press enter.

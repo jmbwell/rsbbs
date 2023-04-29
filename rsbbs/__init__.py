@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-__all__ = ['config', 'console',
-           'controller', 'parser', 'pluginloader']
+__all__ = ['config', 'console', 'controller', 
+           'logger', 'parser', 'pluginloader']
 
 __version__ = "0.3.0"
 
