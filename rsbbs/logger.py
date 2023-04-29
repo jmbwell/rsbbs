@@ -33,7 +33,7 @@ class RSLogger(logging.Logger):
         if self.config.args.debug:
             self.log_level = logging.DEBUG
         else:
-            self.log_level = getattr(logging, 
+            self.log_level = getattr(logging,
                                      self.config.args.log_level.upper())
 
         self.init_logger()
