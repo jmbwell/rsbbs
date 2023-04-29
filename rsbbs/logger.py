@@ -23,7 +23,7 @@ import os
 import platformdirs
 
 
-class RSLogger(logging.Logger):
+class Logger(logging.Logger):
     def __init__(self, config):
         super().__init__(name=config.app_name)
         self.config = config
@@ -55,13 +55,13 @@ class RSLogger(logging.Logger):
         handler = logging.FileHandler(filename=log_filepath)
 
         # Add the calling station to the log messages
-        handler.setFormatter(RSFormatter(self.caller))
+        handler.setFormatter(Formatter(self.caller))
 
         # Add the handler!
         logger.addHandler(handler)
 
 
-class RSFormatter(logging.Formatter):
+class Formatter(logging.Formatter):
     def __init__(self, var):
         super().__init__()
         self.var = var

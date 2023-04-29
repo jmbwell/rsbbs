@@ -19,8 +19,7 @@
 import logging
 import subprocess
 
-from rsbbs.console import Console
-from rsbbs.parser import Parser
+from rsbbs import Console, Parser
 
 
 class Plugin():

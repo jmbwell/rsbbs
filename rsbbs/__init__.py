@@ -17,12 +17,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __all__ = ['config', 'console', 'controller',
-           'logger', 'parser', 'pluginloader']
+           'logger', 'models', 'parser', 'pluginloader']
 
 __version__ = "0.3.0"
 
-# from .config import Config
-# from .console import Console
-# from .controller import Controller
-# from .parser import Parser
-# from .pluginloader import PluginLoader
+from .config import Config
+from .console import Console
+from .controller import Controller
+from .logger import Logger
+from .parser import Parser
+from .pluginloader import PluginLoader

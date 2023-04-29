@@ -18,8 +18,7 @@
 
 import logging
 
-from rsbbs.console import Console
-from rsbbs.parser import Parser
+from rsbbs import Console, Parser
 
 
 class Plugin():
