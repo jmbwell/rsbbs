@@ -12,6 +12,14 @@ user calls your station, `ax25d` answers the call and routes the connection to
 `rsbbs` via standard input (`stdin`). `rsbbs` responds to the user through
 `ax25d` via standard output (`stdout`).
 
+## Features
+
+- **Send and receive messages:** Send a message to another user by callsign, or read messages sent to you.
+- **Private messages:** Send a private message readable only by the user.
+- **Simple setup:** Install it, add it to your ax25d.conf, done!
+- **Plugin architecture:** Add your own commands with simple plugin modules
+- **Access logging:** Keep an eye on your BBS's activity
+
 ## Requirements
 
 - **AX.25:** It is assumed that you have a radio connected to your host, that
