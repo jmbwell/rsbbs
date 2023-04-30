@@ -20,16 +20,18 @@ import logging
 import sys
 
 import rsbbs
-from rsbbs import Config, Controller, Parser, PluginLoader
+from rsbbs import Config, Controller
+from rsbbs.models import User
 
 
 # Main UI console class
 
 class Console():
 
-    def __init__(self, config: Config, controller: Controller):
+    def __init__(self, config: Config, controller: Controller, user: User):
         self.config = config
         self.controller = controller
+        self.user = user
 
         self.parser = rsbbs.Parser()
 
@@ -93,7 +95,9 @@ class Console():
                         f"{self.config.callsign} ")
 
         greeting.append(f"Welcome to {self.config.bbs_name}, "
-                        f"{self.config.calling_station}")
+                        f"{self.user.callsign}")
+
+        greeting.append(f"Last login: {self.user.login_last}")
 
         greeting.append(self.config.banner_message)
 

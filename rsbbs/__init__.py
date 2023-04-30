@@ -27,3 +27,4 @@ from .controller import Controller
 from .logger import Logger
 from .parser import Parser
 from .pluginloader import PluginLoader
+from .user import User

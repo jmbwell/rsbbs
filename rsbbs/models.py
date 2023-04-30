@@ -18,7 +18,7 @@
 
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy import Boolean, DateTime, String, Integer
 
 from sqlalchemy.orm import DeclarativeBase, Mapped
 from sqlalchemy.orm import mapped_column
@@ -38,3 +38,14 @@ class Message(Base):
     datetime: Mapped[DateTime] = mapped_column(
         DateTime, default=datetime.now(timezone.utc))
     is_private: Mapped[bool] = mapped_column(Boolean)
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    callsign: Mapped[str] = mapped_column(String)
+    given_name: Mapped[str] = mapped_column(String, nullable=True)
+    family_name: Mapped[str] = mapped_column(String, nullable=True)
+    login_count: Mapped[int] = mapped_column(Integer)
+    login_last: Mapped[DateTime] = mapped_column(
+        DateTime, default=datetime.now(timezone.utc))

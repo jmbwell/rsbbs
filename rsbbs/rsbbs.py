@@ -23,6 +23,8 @@ from rsbbs import Config, Console, Controller, Logger
 
 from rsbbs.args import parse_args
 
+from rsbbs.user import User
+
 
 def main():
 
@@ -41,8 +43,11 @@ def main():
     # Init the controller
     controller = Controller(config)
 
+    # Init the user:
+    user = User(controller, args.calling_station.upper())
+
     # Init the UI console
-    console = Console(config, controller)
+    console = Console(config, controller, user)
 
     # Start the app
     console.run()
