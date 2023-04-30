@@ -1,2 +1,2 @@
 Welcome to Really Simple BBS!
-https://github.com/jmbwell/rsbbs.git
+https://git.b-wells.us/jmbwell/rsbbs.git
