@@ -44,11 +44,23 @@ class Plugin():
     def delete(self, number) -> None:
         with self.api.controller.session() as session:
             try:
-                message = session.get(Message, number)
-                session.delete(message)
+                statement = sqlalchemy.delete(Message).where(
+                    sqlalchemy.and_(
+                        Message.recipient == self.api.config.calling_station,
+                        Message.id == number,
+                    )).returning(Message)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
                 session.commit()
-                self.api.write_output(f"Deleted message #{number}")
-                logging.info(f"deleted message {number}")
+                results = result.all()
+                count = len(results)
+                if count > 0:
+                    self.api.write_output(f"Deleted message #{number}")
+                    logging.info(f"deleted message {number}")
+                else:
+                    self.api.write_output("A message with that ID addressed "
+                                          "to you was not found.")
             except sqlalchemy.exc.NoResultFound:
                 self.api.write_output(f"Message not found.")
             except Exception as e:
