@@ -45,6 +45,7 @@ def main():
 
     # Init the user:
     user = User(config, controller)
+    user.record_login()
 
     # Init the UI console
     console = Console(config, controller, user)

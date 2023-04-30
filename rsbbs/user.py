@@ -50,9 +50,6 @@ class User():
                 if result:
                     user = result[0]
                     logging.info(f"User {result[0].callsign} found.")
-                    self.login_last = user.login_last
-                    user.login_count = user.login_count + 1
-                    user.login_last = datetime.now(timezone.utc)
                     session.commit()
                 else:
                     logging.info(f"User not found.")
@@ -64,6 +61,28 @@ class User():
                     session.commit()
                     logging.info(f"User added.")
                 return user
+            except Exception as e:
+                logging.error(e)
+                raise
+
+    def record_login(self):
+        with self.controller.session() as session:
+            try:
+                statement = sqlalchemy.select(SAUser).where(
+                    SAUser.callsign == self.callsign)
+                exopts = {"prebuffer_rows": True}
+                result = session.execute(statement,
+                                         execution_options=exopts)
+                result = result.one_or_none()
+                if result:
+                    user = result[0]
+                    self.login_last = user.login_last
+                    user.login_count = user.login_count + 1
+                    user.login_last = datetime.now(timezone.utc)
+                    session.commit()
+                    logging.info(f"User updated.")
+                else:
+                    logging.info(f"User not found.")
             except Exception as e:
                 logging.error(e)
                 raise
