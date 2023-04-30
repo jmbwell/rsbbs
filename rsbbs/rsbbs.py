@@ -44,7 +44,7 @@ def main():
     controller = Controller(config)
 
     # Init the user:
-    user = User(controller, args.calling_station.upper())
+    user = User(config, controller)
 
     # Init the UI console
     console = Console(config, controller, user)

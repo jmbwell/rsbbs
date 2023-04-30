@@ -23,15 +23,15 @@ import sqlalchemy
 from datetime import datetime, timezone
 
 from rsbbs import __version__
-from rsbbs import Controller
+from rsbbs import Config, Controller
 
 from rsbbs.models import User as SAUser
 
 
 class User():
-    def __init__(self, controller: Controller, callsign: str):
+    def __init__(self, config: Config, controller: Controller):
         self.controller = controller
-        self.callsign = callsign
+        self.callsign = config.args.calling_station.upper()
         self.user = self.get_or_create_user()
 
     def __getattr__(self, __name: str) -> Any:
@@ -42,7 +42,7 @@ class User():
             session.expire_on_commit = False
             try:
                 statement = sqlalchemy.select(SAUser).where(
-                    SAUser.callsign == self.callsign.upper())
+                    SAUser.callsign == self.callsign)
                 exopts = {"prebuffer_rows": True}
                 result = session.execute(statement,
                                          execution_options=exopts)
@@ -57,7 +57,7 @@ class User():
                 else:
                     logging.info(f"User not found.")
                     user = SAUser(
-                        callsign=self.callsign.upper(),
+                        callsign=self.callsign,
                         login_count=1,
                     )
                     session.add(user)
