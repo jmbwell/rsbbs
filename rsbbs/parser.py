@@ -29,6 +29,25 @@ class BBSArgumentParser(argparse.ArgumentParser):
         pass
 
 
+class SortedHelpFormatter(argparse.HelpFormatter):
+    def _iter_indented_subactions(self, action):
+        try:
+            get_subactions = action._get_subactions
+        except AttributeError:
+            pass
+        else:
+            self._indent()
+            if isinstance(action, argparse._SubParsersAction):
+                for subaction in sorted(
+                    get_subactions(),
+                        key=lambda x: x.dest):
+                    yield subaction
+            else:
+                for subaction in get_subactions():
+                    yield subaction
+            self._dedent()
+
+
 class Parser(BBSArgumentParser):
 
     def __init__(self):
@@ -43,12 +62,15 @@ class Parser(BBSArgumentParser):
             return getattr(self.parser, attr)
 
     def _init_parser(self):
+        self.sort_actions = True
+
         # Root parser for BBS commands
         self.parser = BBSArgumentParser(
             description='BBS Main Menu',
             prog='',
             add_help=False,
             usage=argparse.SUPPRESS,
+            formatter_class=SortedHelpFormatter,
         )
 
         # We will create a subparser for each individual command
