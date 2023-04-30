@@ -31,10 +31,10 @@ def parse_args():
     # Configure args:
     args_list = [
         # [ short, long, action, default, dest, help, required ]
+        # Debug flag:
         ['-d', '--debug', 'store_true', None, 'debug',
             'Enable debugging output to stdout', False],
-        # ['-s', '--calling-station', 'store', 'N0CALL', 'calling_station',
-        #     'Callsign of the calling station', True],
+        # Config file path:
         ['-f', '--config-file', 'store', None, 'config_file',
             'Path to config.yaml file', False],
     ]
