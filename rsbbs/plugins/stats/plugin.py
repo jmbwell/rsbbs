@@ -17,13 +17,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import re
 import sqlalchemy
 import sqlalchemy.orm
 import subprocess
 
 from rsbbs import __version__
 from rsbbs import Console, Parser
-from rsbbs.models import Message
+from rsbbs.models import Message, User
 
 
 class Plugin():
@@ -49,16 +50,30 @@ class Plugin():
             except Exception as e:
                 logging.error(e)
 
+    def get_user_count(self) -> int:
+        with self.api.controller.session() as session:
+            try:
+                count = session.execute(sqlalchemy.select(
+                    sqlalchemy.func.count(User.id))).scalar_one()
+                return int(count)
+            except Exception as e:
+                logging.error(e)
+
     def get_uptime(self) -> str:
         result = subprocess.run(
             ['uptime'], capture_output=True, text=True)
-        return result.stdout
+        uptime = result.stdout
+        find = r'.*up\s(.+?),\s*?(\d+?):(\d+?).*'
+        replace = r'\1, \2 hour(s), \3 minutes'
+        response = re.sub(find, replace, uptime)
+        return response
 
     def run(self, args) -> None:
         """Show some stats."""
         response = []
         response.append(f"[RSBBS-{__version__}] listening on "
                         f"{self.api.config.callsign} ")
+        response.append(f"Users: {self.get_user_count()}")
         response.append(f"Messages: {self.get_message_count()}")
         response.append(f"Uptime: {self.get_uptime()}")
         self.api.write_output('\r\n'.join(response))
