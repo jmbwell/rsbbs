@@ -32,7 +32,7 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='readm',
+            name='readmine',
             aliases=['rm'],
             help='Read all messages addressed to you')
         subparser.set_defaults(func=self.run)

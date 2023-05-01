@@ -32,7 +32,7 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='listm',
+            name='listmine',
             aliases=['lm'],
             help='List messages addressed to you')
         subparser.set_defaults(func=self.run)

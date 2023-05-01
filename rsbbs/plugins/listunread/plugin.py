@@ -32,8 +32,8 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='listm',
-            aliases=['ln'],
+            name='listu',
+            aliases=['lu'],
             help='List unread messages addressed to you')
         subparser.set_defaults(func=self.run)
 

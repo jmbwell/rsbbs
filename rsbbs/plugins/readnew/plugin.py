@@ -32,8 +32,8 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='readnew',
-            aliases=['rn'],
+            name='readunread',
+            aliases=['ru'],
             help='Read all unread messages addressed to you')
         subparser.set_defaults(func=self.run)
 
