@@ -18,7 +18,6 @@
 
 import logging
 import sqlalchemy
-import sqlalchemy.exc
 
 from rsbbs import Console, Parser
 from rsbbs.models import Message, User
@@ -33,35 +32,30 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='read',
-            aliases=['r'],
-            help='Read a message')
-        subparser.add_argument('number', help='Message number to read')
+            name='listm',
+            aliases=['ln'],
+            help='List unread messages addressed to you')
         subparser.set_defaults(func=self.run)
 
-    def read_message(self, number) -> None:
+    def list_mine(self, args) -> sqlalchemy.ChunkedIteratorResult:
         with self.api.controller.session() as session:
             try:
+                callsign = self.api.config.calling_station
                 statement = sqlalchemy.select(Message).where(
-                    Message.id == number)
-                result = session.execute(statement).one()
-                self.api.print_message(result)
-                logging.info(f"read message")
-                session.commit()
-                user = session.get(User, self.api.user.id)
-                user.messages.append(result[0])
-                logging.info(f"User {user.id} read message {result[0].id}")
-                session.commit()
-            except sqlalchemy.exc.NoResultFound:
-                self.api.write_output(f"Message not found.")
-            except Exception as e:
-                logging.error(e)
+                    Message.recipient == callsign).where(
+                    ~Message.read_by.any(User.id == self.api.user.id)
+                    )
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
+                logging.info("list my messages")
+                return result
+            except Exception:
+                raise
 
-    def run(self, args) -> None:
-        """Read a message.
-
-        Arguments:
-        number -- the message number to read
+    def run(self, args):
+        """List only messages addressed to the calling station's callsign,
+        including public and private messages.
         """
-        if args.number:
-            self.read_message(args.number)
+        result = self.list_mine(args)
+        self.api.print_message_list(result)

@@ -18,15 +18,26 @@
 
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, String, Integer
+from sqlalchemy import Boolean, DateTime, String, Integer,\
+    Table, ForeignKey, Column
 
 from sqlalchemy.orm import DeclarativeBase, Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import mapped_column, relationship, backref
 
 
 class Base(DeclarativeBase):
     pass
 
+
+# Define the association table that links users and messages
+user_message_table = Table('user_message', Base.metadata,
+                           Column('user_id',
+                                  Integer, ForeignKey('user.id')),
+                           Column('message_id',
+                                  Integer, ForeignKey('message.id')))
+
+
+# Messages
 
 class Message(Base):
     __tablename__ = 'message'
@@ -40,6 +51,8 @@ class Message(Base):
     is_private: Mapped[bool] = mapped_column(Boolean)
 
 
+# Users
+
 class User(Base):
     __tablename__ = 'user'
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -49,3 +62,6 @@ class User(Base):
     login_count: Mapped[int] = mapped_column(Integer)
     login_last: Mapped[DateTime] = mapped_column(
         DateTime, default=datetime.now(timezone.utc))
+    messages = relationship('Message',
+                            secondary=user_message_table,
+                            backref='read_by')

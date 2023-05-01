@@ -34,14 +34,15 @@ class Plugin():
         subparser = parser.subparsers.add_parser(
             name='listm',
             aliases=['lm'],
-            help='List only messages addressed to you')
+            help='List messages addressed to you')
         subparser.set_defaults(func=self.run)
 
     def list_mine(self, args) -> sqlalchemy.ChunkedIteratorResult:
         with self.api.controller.session() as session:
             try:
+                callsign = self.api.config.calling_station
                 statement = sqlalchemy.select(Message).where(
-                    Message.recipient == self.api.config.calling_station)
+                    Message.recipient == callsign)
                 result = session.execute(
                     statement,
                     execution_options={"prebuffer_rows": True})

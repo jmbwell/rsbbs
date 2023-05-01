@@ -28,6 +28,7 @@ class Controller():
     def __init__(self, config: Config) -> None:
         self.config = config
         self._init_datastore()
+        self._session
 
     def _init_datastore(self) -> None:
         """Create a connection to the sqlite3 database.
@@ -42,5 +43,7 @@ class Controller():
         # Create the database schema if none exists
         Base.metadata.create_all(self.engine)
 
+        self._session = Session(self.engine, autoflush=True)
+
     def session(self) -> Session:
-        return Session(self.engine)
+        return self._session

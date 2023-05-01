@@ -18,7 +18,6 @@
 
 import logging
 import sqlalchemy
-import sqlalchemy.exc
 
 from rsbbs import Console, Parser
 from rsbbs.models import Message, User
@@ -33,35 +32,35 @@ class Plugin():
 
     def init_parser(self, parser: Parser) -> None:
         subparser = parser.subparsers.add_parser(
-            name='read',
-            aliases=['r'],
-            help='Read a message')
-        subparser.add_argument('number', help='Message number to read')
+            name='readnew',
+            aliases=['rn'],
+            help='Read all unread messages addressed to you')
         subparser.set_defaults(func=self.run)
 
-    def read_message(self, number) -> None:
+    def list_mine(self, args) -> sqlalchemy.ChunkedIteratorResult:
         with self.api.controller.session() as session:
             try:
                 statement = sqlalchemy.select(Message).where(
-                    Message.id == number)
-                result = session.execute(statement).one()
-                self.api.print_message(result)
+                    Message.recipient == self.api.config.calling_station
+                    and self.api.user.id not in Message.read_by)
+                result = session.execute(
+                    statement,
+                    execution_options={"prebuffer_rows": True})
                 logging.info(f"read message")
-                session.commit()
-                user = session.get(User, self.api.user.id)
-                user.messages.append(result[0])
-                logging.info(f"User {user.id} read message {result[0].id}")
-                session.commit()
-            except sqlalchemy.exc.NoResultFound:
-                self.api.write_output(f"Message not found.")
-            except Exception as e:
-                logging.error(e)
+                return result
+            except Exception:
+                raise
 
     def run(self, args) -> None:
-        """Read a message.
-
-        Arguments:
-        number -- the message number to read
-        """
-        if args.number:
-            self.read_message(args.number)
+        """Read all messages addressed to the calling station's callsign,
+        in sequence."""
+        result = self.list_mine(args)
+        messages = result.all()
+        count = len(messages)
+        if count > 0:
+            self.api.write_output(f"Reading {count} messages:")
+            for message in messages:
+                self.api.print_message(message)
+                self.api.read_enter("Enter to continue...")
+        else:
+            self.api.write_output(f"No messages to read.")
