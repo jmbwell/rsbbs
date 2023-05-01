@@ -60,6 +60,12 @@ class Plugin():
             self.api.write_output(f"Reading {count} messages:")
             for message in messages:
                 self.api.print_message(message)
+                with self.api.controller.session() as session:
+                    user = session.get(User, self.api.user.id)
+                    user.messages.append(message[0])
+                    session.commit()
+                    logging.info(f"User {self.api.user.id} "
+                                 f"read message {message[0].id }")
                 self.api.read_enter("Enter to continue...")
         else:
             self.api.write_output(f"No messages to read.")
