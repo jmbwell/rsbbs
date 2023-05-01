@@ -36,9 +36,9 @@ class Logger(logging.Logger):
             self.log_level = getattr(logging,
                                      self.config.args.log_level.upper())
 
-        self.init_logger()
+        self._init_logger()
 
-    def init_logger(self):
+    def _init_logger(self):
         logger = logging.getLogger()
         logger.setLevel(self.level)
 
