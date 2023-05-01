@@ -20,7 +20,7 @@ import logging
 import sqlalchemy
 
 from rsbbs import Console, Parser
-from rsbbs.models import Message
+from rsbbs.models import Message, User
 
 
 class Plugin():
