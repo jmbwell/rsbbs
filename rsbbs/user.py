@@ -33,10 +33,10 @@ class User():
     def __init__(self, config: Config, controller: Controller):
         self.controller = controller
         self.callsign = config.args.calling_station.upper()
-        self.user = self.get_or_create_user()
+        self._user = self.get_or_create_user()
 
     def __getattr__(self, __name: str) -> Any:
-        return getattr(self.user, __name)
+        return getattr(self._user, __name)
 
     def get_or_create_user(self):
         with self.controller.session() as session:
