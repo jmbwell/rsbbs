@@ -31,21 +31,25 @@ class BBSArgumentParser(argparse.ArgumentParser):
 
 class SortedHelpFormatter(argparse.HelpFormatter):
     def _iter_indented_subactions(self, action):
-        try:
-            get_subactions = action._get_subactions
-        except AttributeError:
-            pass
+
+        if not hasattr(action, '_get_subactions'):
+            return
+
+        self._indent()
+
+        subactions = action._get_subactions
+
+        if isinstance(action, argparse._SubParsersAction):
+            sorted_subactions = sorted(
+                subactions(),
+                key=lambda x: x.dest)
         else:
-            self._indent()
-            if isinstance(action, argparse._SubParsersAction):
-                for subaction in sorted(
-                    get_subactions(),
-                        key=lambda x: x.dest):
-                    yield subaction
-            else:
-                for subaction in get_subactions():
-                    yield subaction
-            self._dedent()
+            sorted_subactions = subactions
+
+        for subaction in sorted_subactions:
+            yield subaction
+
+        self._dedent()
 
 
 class Parser(BBSArgumentParser):
