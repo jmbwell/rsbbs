@@ -31,29 +31,33 @@ class Config():
         self._load_config()
 
         # Put the messages db file in the system's user data directory
-        self.config['db_path'] = os.path.join(
+        self._config['db_path'] = os.path.join(
             platformdirs.user_data_dir(
                 appname=self.app_name,
                 ensure_exists=True),
             'messages.db')
 
         # Grab some config from the command line for convenience
-        self.config['args'] = args
-        self.config['calling_station'] = args.calling_station.upper() or None
-        self.config['debug'] = args.debug
+        self._config['args'] = args
+        self._config['calling_station'] = args.calling_station.upper() or None
+        self._config['debug'] = args.debug
 
     # The main thing people want from Config is config values, so let's pretend
     # everything anyone asks of Config that isn't otherwise defined is probably
     # a config value they want
     def __getattr__(self, __name: str):
-        return self.config[__name]
+        return self._config[__name]
 
-    # Format the config for display
+    # Handle requests to access this thing as a dict:
+    def __dict__(self):
+        return self._config
+
+    # Format the config as yaml for display
     def __repr__(self):
         repr = []
         repr.append(f"app_name: {self.app_name}\r\n")
         repr.append(f"config_file: {self.config_file}\r\n")
-        repr.append(yaml.dump(self.config))
+        repr.append(yaml.dump(self._config))
         return ''.join(repr)
 
     @property
@@ -93,7 +97,7 @@ class Config():
         # Load it
         try:
             with open(self.config_file, 'r') as f:
-                self.config = yaml.load(f, Loader=yaml.FullLoader)
+                self._config = yaml.load(f, Loader=yaml.FullLoader)
         except Exception as e:
             print(f"Error loading configuration file: {e}")
             exit(1)
