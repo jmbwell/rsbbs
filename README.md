@@ -16,7 +16,8 @@ user calls your station, `ax25d` answers the call and routes the connection to
 
 ## Features
 
-- **Send and receive messages:** Send a message to another user by callsign, or read messages sent to you.
+- **Send and receive messages:** Send a message to another user by callsign, or
+  read messages sent to you.
 - **Private messages:** Send a private message readable only by the user.
 - **Simple setup:** Install it, add it to your ax25d.conf, done!
 - **Plugin architecture:** Add your own commands with simple plugin modules
@@ -67,9 +68,8 @@ banner_message: Leave a message!
 command_prompt: ENTER COMMAND >
 ```
 
-> Tip:
-> To show the location of the current config file (among other configuration
-> options), run:
+> Tip: To show the location of the current config file (among other
+> configuration options), run:
 > ```
 > rsbbs --show-config
 > ```
