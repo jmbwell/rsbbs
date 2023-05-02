@@ -1,5 +1,7 @@
 # Really Simple BBS
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/d21cbff7e4708d58d91b/maintainability)](https://codeclimate.com/github/jmbwell/rsbbs/maintainability)
+
 A message board for packet radio, suitable for use with ax25d. 
 
 Really Simple BBS (`rsbbs`) implements a bulletin board system that enables
