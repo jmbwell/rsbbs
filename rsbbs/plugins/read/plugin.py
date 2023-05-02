@@ -43,7 +43,13 @@ class Plugin():
         with self.api.controller.session() as session:
             try:
                 statement = sqlalchemy.select(Message).where(
-                    Message.id == number)
+                    sqlalchemy.or_(
+                        sqlalchemy.and_(
+                            Message.id == number,
+                            Message.recipient == self.api.user.callsign),
+                        sqlalchemy.and_(
+                            Message.id == number,
+                            sqlalchemy.not_(Message.is_private))))
                 result = session.execute(statement).one()
                 self.api.print_message(result)
                 logging.info(f"read message")
