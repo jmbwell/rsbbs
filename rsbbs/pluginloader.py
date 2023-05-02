@@ -34,7 +34,7 @@ class PluginLoader():
         # Discover all subdirectories in the plugins directory
         plugin_dirs = [d
                        for d in os.listdir(self.plugins_dir)
-                       if os.path.isdir(os.path.join(self.plugins_dir, d)) 
+                       if os.path.isdir(os.path.join(self.plugins_dir, d))
                        and not d.startswith('__')]
         return plugin_dirs
 
