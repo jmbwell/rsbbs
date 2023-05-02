@@ -17,8 +17,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
-from typing import Any
 import sqlalchemy
+
+from typing import Any
 
 from datetime import datetime, timezone
 
