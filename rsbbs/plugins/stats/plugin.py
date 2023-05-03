@@ -77,4 +77,4 @@ class Plugin():
         response.append(f"Messages: {self.get_message_count()}")
         response.append(f"Uptime: {self.get_uptime()}")
         self.api.write_output('\r\n'.join(response))
-        logging.info(f"report stats")
+        logging.info("report stats")

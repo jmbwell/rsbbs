@@ -18,7 +18,6 @@
 
 import logging
 
-from rsbbs import __version__
 from rsbbs import Config, Console, Controller, Logger
 
 from rsbbs.args import parse_args
@@ -38,7 +37,7 @@ def main():
 
     # Start logging
     logger = Logger(config)
-    logging.info(f"caller connected")
+    logging.info("caller connected")
 
     # Init the controller
     controller = Controller(config)

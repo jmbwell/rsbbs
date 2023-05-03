@@ -40,15 +40,15 @@ class Plugin():
         """Show a log of stations that have been heard by this station,
         also known as the 'mheard' (linux) or 'jheard' (KPC, etc.) log.
         """
-        self.api.write_output(f"Heard stations:")
+        self.api.write_output("Heard stations:")
         try:
             result = subprocess.run(['mheard'], capture_output=True, text=True)
             self.api.write_output(result.stdout)
             logging.info("queried heard log")
         except FileNotFoundError:
-            self.api.write_output(f"mheard utility not found.")
-        except Exception as e:
+            self.api.write_output("mheard utility not found.")
+        except Exception:
             if self.api.config.debug:
                 raise
             else:
-                self.api.write_output(f"Heard stations not available.")
+                self.api.write_output("Heard stations not available.")

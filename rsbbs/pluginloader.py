@@ -53,7 +53,7 @@ class PluginLoader():
 
             # Add the loaded plugin to the list of plugins
             self.plugins.append(plugin)
-        except Exception as e:
+        except Exception:
             raise
 
     def load_plugins(self) -> None:

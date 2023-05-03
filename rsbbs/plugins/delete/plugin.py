@@ -62,7 +62,7 @@ class Plugin():
                     self.api.write_output("A message with that ID addressed "
                                           "to you was not found.")
             except sqlalchemy.exc.NoResultFound:
-                self.api.write_output(f"Message not found.")
+                self.api.write_output("Message not found.")
             except Exception as e:
                 logging.error(e)
 

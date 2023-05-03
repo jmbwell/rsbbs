@@ -53,7 +53,7 @@ class Plugin():
                     self.api.write_output(f"Deleted {count} messages")
                     logging.info(f"deleted {count} messages")
                 else:
-                    self.api.write_output(f"No messages to delete.")
+                    self.api.write_output("No messages to delete.")
             except Exception as e:
                 self.api.write_output(f"Unable to delete messages: {e}")
 

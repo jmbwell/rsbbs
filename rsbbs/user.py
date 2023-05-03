@@ -23,9 +23,7 @@ from typing import Any
 
 from datetime import datetime, timezone
 
-from rsbbs import __version__
 from rsbbs import Config, Controller
-
 from rsbbs.models import User as SAUser
 
 
@@ -53,14 +51,14 @@ class User():
                     logging.info(f"User {result[0].callsign} found.")
                     session.commit()
                 else:
-                    logging.info(f"User not found.")
+                    logging.info("User not found.")
                     user = SAUser(
                         callsign=self.callsign,
                         login_count=1,
                     )
                     session.add(user)
                     session.commit()
-                    logging.info(f"User added.")
+                    logging.info("User added.")
                 return user
             except Exception as e:
                 logging.error(e)
@@ -81,9 +79,9 @@ class User():
                     user.login_count = user.login_count + 1
                     user.login_last = datetime.now(timezone.utc)
                     session.commit()
-                    logging.info(f"User updated.")
+                    logging.info("User updated.")
                 else:
-                    logging.info(f"User not found.")
+                    logging.info("User not found.")
             except Exception as e:
                 logging.error(e)
                 raise

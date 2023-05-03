@@ -48,7 +48,7 @@ class Plugin():
                 result = session.execute(
                     statement,
                     execution_options={"prebuffer_rows": True})
-                logging.info(f"read message")
+                logging.info("read message")
                 return result
             except Exception:
                 raise
@@ -71,4 +71,4 @@ class Plugin():
                                  f"read message {message[0].id }")
                 self.api.read_enter("Enter to continue...")
         else:
-            self.api.write_output(f"No messages to read.")
+            self.api.write_output("No messages to read.")

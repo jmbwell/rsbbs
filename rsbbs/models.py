@@ -22,7 +22,7 @@ from sqlalchemy import Boolean, DateTime, String, Integer,\
     Table, ForeignKey, Column
 
 from sqlalchemy.orm import DeclarativeBase, Mapped
-from sqlalchemy.orm import mapped_column, relationship, backref
+from sqlalchemy.orm import mapped_column, relationship
 
 
 class Base(DeclarativeBase):

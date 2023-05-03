@@ -52,14 +52,14 @@ class Plugin():
                             sqlalchemy.not_(Message.is_private))))
                 result = session.execute(statement).one()
                 self.api.print_message(result)
-                logging.info(f"read message")
+                logging.info("read message")
                 session.commit()
                 user = session.get(User, self.api.user.id)
                 user.messages.append(result[0])
                 logging.info(f"User {user.id} read message {result[0].id}")
                 session.commit()
             except sqlalchemy.exc.NoResultFound:
-                self.api.write_output(f"Message not found.")
+                self.api.write_output("Message not found.")
             except Exception as e:
                 logging.error(e)
 

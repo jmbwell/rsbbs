@@ -111,13 +111,13 @@ class Console():
         datetime = message.Message.datetime.strftime(
             '%A, %B %-d, %Y at %-H:%M %p UTC')
         # Print the message
-        self.write_output(f"")
+        self.write_output("")
         self.write_output(f"Message: {message.Message.id}")
         self.write_output(f"Date:    {datetime}")
         self.write_output(f"From:    {message.Message.sender}")
         self.write_output(f"To:      {message.Message.recipient}")
         self.write_output(f"Subject: {message.Message.subject}")
-        self.write_output(f"")
+        self.write_output("")
         self.write_output(f"{message.Message.message}")
 
     def print_message_list(self, messages) -> None:
