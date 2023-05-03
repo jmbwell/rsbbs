@@ -27,6 +27,7 @@ from rsbbs.models import User
 # Main UI console class
 
 class Console():
+    """Class for user input and output."""
 
     def __init__(self, config: Config, controller: Controller, user: User):
         self.config = config
@@ -43,52 +44,72 @@ class Console():
     #
 
     def disconnect(self) -> None:
+        """End the program, disconnecting the user
+        """
         logging.info("caller disconnected")
-        exit(0)
+        sys.exit(0)
 
-    def read_enter(self, prompt) -> None:
+    def read_enter(self, prompt: str) -> None:
         """Wait for the user to press enter.
+
+        :param prompt: an optional prompt to show the user
+
         """
         if prompt:
             self.write_output(prompt)
         sys.stdin.readline().strip()
 
-    def read_line(self, prompt) -> str:
+    def read_line(self, prompt: str) -> str:
         """Read a single line of input, with an optional prompt,
         until we get something.
+
+        :param prompt: an optional prompt to show the user
+
         """
-        output = None
-        while not output:
+        valid_input = None
+        while not valid_input:
             if prompt:
                 self.write_output(prompt)
-            input = sys.stdin.readline().strip()
-            if input != "":
-                output = input
-        return output
+            input_line = sys.stdin.readline().strip()
+            if input_line != "":
+                valid_input = input_line
+        return valid_input
 
-    def read_multiline(self, prompt) -> str:
+    def read_multiline(self, prompt: str) -> str:
         """Read multiple lines of input, with an optional prompt,
         until the user enters '/ex' by itself on a line.
+
+        :param prompt: an optional prompt to show the user
+
         """
-        output = []
+        input_lines = []
         if prompt:
             self.write_output(prompt)
         while True:
-            line = sys.stdin.readline()
-            if line.lower().strip() == "/ex":
+            input_line = sys.stdin.readline()
+            if input_line.lower().strip() != "/ex":
                 break
-            else:
-                output.append(line)
-        return ''.join(output)
+            input_lines.append(input_line)
+        return ''.join(input_lines)
 
-    def write_output(self, output) -> None:
-        """Write something to stdout."""
+    def write_output(self, output: str) -> None:
+        """Write something to stdout.
+
+        :param output: the string to write to stdout
+
+        """
         sys.stdout.write(output + '\r\n')
 
     def print_configuration(self) -> None:
+        """Print the current running configuration.
+
+        """
         self.write_output(repr(self.config))
 
     def print_greeting(self) -> None:
+        """Show a greeting to welcome the user upon connection.
+
+        """
         # Show greeting
         greeting = []
         greeting.append(f"[RSBBS-{rsbbs.__version__}] listening on "
@@ -105,8 +126,12 @@ class Console():
 
         self.write_output('\r\n'.join(greeting))
 
-    def print_message(self, message):
-        """Print an individual message."""
+    def print_message(self, message: str):
+        """Print an individual message.
+
+        :param message: the message to print
+
+        """
         # Format the big ol' date and time string
         datetime = message.Message.datetime.strftime(
             '%A, %B %-d, %Y at %-H:%M %p UTC')
@@ -120,8 +145,12 @@ class Console():
         self.write_output("")
         self.write_output(f"{message.Message.message}")
 
-    def print_message_list(self, messages) -> None:
-        """Print a list of messages."""
+    def print_message_list(self, messages: list) -> None:
+        """Print a list of messages.
+
+        :param messages: a list of Message objects to print
+
+        """
         # Print the column headers
         self.write_output(f"{'MSG#': <{5}} "
                           f"{'TO': <{9}} "
@@ -142,11 +171,13 @@ class Console():
     #
 
     def run(self):
+        """Main UI loop.
 
+        """
         # If asked to show the config, show the config;
         if self.config.args.show_config:
             self.print_configuration()
-            exit(0)
+            sys.exit(0)
 
         # Show greeting
         self.print_greeting()
@@ -155,15 +186,14 @@ class Console():
         self.write_output(self.config.command_prompt)
 
         # Parse the BBS interactive commands for the rest of time
-        for line in sys.stdin:
+        for input_line in sys.stdin:
             try:
-                args = self.parser.parse_args(line.split())
+                args = self.parser.parse_args(input_line.split())
                 args.func(args)
             except Exception:
                 if self.config.debug:
                     raise
-                else:
-                    pass
+                pass
 
             # Show our prompt to the calling user again
             self.write_output(self.config.command_prompt)
