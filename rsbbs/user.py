@@ -23,7 +23,8 @@ from typing import Any
 
 from datetime import datetime, timezone
 
-from rsbbs import Config, Controller
+from rsbbs.config import Config
+from rsbbs.controller import Controller
 from rsbbs.models import User as SAUser
 
 

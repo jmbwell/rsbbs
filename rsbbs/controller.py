@@ -19,7 +19,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from rsbbs import Config
+from rsbbs.config import Config
 from rsbbs.models import Base
 
 

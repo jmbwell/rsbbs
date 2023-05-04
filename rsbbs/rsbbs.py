@@ -18,7 +18,10 @@
 
 import logging
 
-from rsbbs import Config, Console, Controller, Logger
+from rsbbs.config import Config
+from rsbbs.console import Console
+from rsbbs.controller import Controller
+from rsbbs.logger import Logger
 
 from rsbbs.args import parse_args
 
@@ -26,6 +29,10 @@ from rsbbs.user import User
 
 
 def main():
+    """RSBBS - The BBS for packet radio that is really simple.
+
+    main function.
+    """
 
     # Grab the invocation arguments
     args = parse_args()

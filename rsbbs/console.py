@@ -20,7 +20,10 @@ import logging
 import sys
 
 import rsbbs
-from rsbbs import Config, Controller
+from rsbbs.config import Config
+from rsbbs.controller import Controller
+from rsbbs.parser import Parser
+from rsbbs.pluginloader import PluginLoader
 from rsbbs.models import User
 
 
@@ -34,9 +37,9 @@ class Console():
         self.controller = controller
         self.user = user
 
-        self.parser = rsbbs.Parser()
+        self.parser = Parser()
 
-        self.pluginloader = rsbbs.PluginLoader(self)
+        self.pluginloader = PluginLoader(self)
         self.pluginloader.load_plugins()
 
     #
