@@ -23,7 +23,8 @@ import sqlalchemy.orm
 import subprocess
 
 from rsbbs import __version__
-from rsbbs import Console, Parser
+from rsbbs.console import Console
+from rsbbs.parser import Parser
 from rsbbs.models import Message, User
 
 

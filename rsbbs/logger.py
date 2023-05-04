@@ -48,7 +48,7 @@ class Logger(logging.Logger):
                 logger.removeHandler(handler)
 
         # Log to a file in the system user log directory
-        log_dir = platformdirs.user_log_dir(appname=self.name,
+        log_dir = platformdirs.user_log_dir(appname=self.name, 
                                             ensure_exists=True)
         log_filepath = os.path.join(log_dir, 'activity.log')
 
@@ -59,7 +59,6 @@ class Logger(logging.Logger):
 
         # Add the handler!
         logger.addHandler(handler)
-
 
 class Formatter(logging.Formatter):
     def __init__(self, var):

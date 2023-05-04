@@ -22,7 +22,8 @@ import platformdirs
 
 from pathlib import Path
 
-from rsbbs import Console, Parser
+from rsbbs.console import Console
+from rsbbs.parser import Parser
 
 
 class Plugin():

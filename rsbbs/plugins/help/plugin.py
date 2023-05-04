@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from rsbbs import Console, Parser
+from rsbbs.console import Console
+from rsbbs.parser import Parser
 
 
 class Plugin():

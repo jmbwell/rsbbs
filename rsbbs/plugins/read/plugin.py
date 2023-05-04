@@ -20,7 +20,8 @@ import logging
 import sqlalchemy
 import sqlalchemy.exc
 
-from rsbbs import Console, Parser
+from rsbbs.console import Console
+from rsbbs.parser import Parser
 from rsbbs.models import Message, User
 
 

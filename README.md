@@ -29,6 +29,8 @@ user calls your station, `ax25d` answers the call and routes the connection to
   you have configured your axports, and that ax25d can answer calls.
 - **Python 3:** As this is a python 3 application, you will need python 3 and
   pip. 
+- Note on compiling Python3: If you build Python3 from source on
+  debian/raspbian, you will need libssl-dev, libffi-dev, and libsqlite3-dev
 - **Hardware:** A system capable of running Direwolf and ax25d should be more
   than sufficient.
 
