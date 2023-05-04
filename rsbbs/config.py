@@ -28,6 +28,7 @@ class Config():
         self.app_name = app_name
         self._argv_config_file = args.config_file
 
+        self._init_config_file()
         self._load_config()
 
         # Put the messages db file in the system's user data directory
