@@ -30,7 +30,7 @@ rsbbs = "rsbbs.rsbbs:main"
 repository = "https://git.b-wells.us/jmbwell/rsbbs"
 
 [tool.setuptools.package-data]
-rsbbs = ["config_default.yaml"]
+rsbbs = ["config_default.yaml","plugins/info/info_default.txt"]
 
 [tool.setuptools.dynamic]
 version = {attr = "rsbbs.__version__"}
