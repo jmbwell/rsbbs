@@ -32,10 +32,11 @@ class Config():
         self._load_config()
 
         # Put the messages db file in the system's user data directory
+        db_dir = platformdirs.user_data_dir(appname=self.app_name)
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir)
         self._config['db_path'] = os.path.join(
-            platformdirs.user_data_dir(
-                appname=self.app_name,
-                ensure_exists=True),
+            db_dir,
             'messages.db')
 
         # Grab some config from the command line for convenience
@@ -64,10 +65,11 @@ class Config():
     @property
     def config_file(self):
         # Use either the specified file or a file in a system config location
+        config_dir = platformdirs.user_config_dir(appname=self.app_name)
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
         config_file = self._argv_config_file or os.path.join(
-            platformdirs.user_config_dir(
-                appname=self.app_name,
-                ensure_exists=True),
+            config_dir,
             'config.yaml'
         )
         return config_file

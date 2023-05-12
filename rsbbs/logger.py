@@ -48,9 +48,11 @@ class Logger(logging.Logger):
                 logger.removeHandler(handler)
 
         # Log to a file in the system user log directory
-        log_dir = platformdirs.user_log_dir(appname=self.name, 
-                                            ensure_exists=True)
+        log_dir = platformdirs.user_log_dir(appname=self.name)
         log_filepath = os.path.join(log_dir, 'activity.log')
+
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
 
         handler = logging.FileHandler(filename=log_filepath)
 
