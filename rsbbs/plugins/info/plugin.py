@@ -17,6 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import os
 import pkg_resources
 import platformdirs
 
@@ -43,10 +44,12 @@ class Plugin():
 
     @property
     def file(self) -> Path:
+        file_dir = platformdirs.user_config_dir(
+            appname=self.api.config.app_name)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
         self._file = Path().joinpath(
-            platformdirs.user_config_dir(
-                appname=self.api.config.app_name,
-                ensure_exists=True),
+            file_dir,
             'info.txt'
             )
         return self._file
