@@ -90,7 +90,7 @@ class Console():
             self.write_output(prompt)
         while True:
             input_line = sys.stdin.readline()
-            if input_line.lower().strip() != "/ex":
+            if input_line.lower().strip() == "/ex":
                 break
             input_lines.append(input_line)
         return ''.join(input_lines)
