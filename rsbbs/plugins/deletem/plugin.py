@@ -43,13 +43,12 @@ class Plugin():
             try:
                 statement = sqlalchemy.delete(Message).where(
                     Message.recipient == self.api.config.calling_station
-                    ).returning(Message)
+                    )
                 result = session.execute(
                     statement,
                     execution_options={"prebuffer_rows": True})
+                count = result.rowcount
                 session.commit()
-                messages = result.all()
-                count = len(messages)
                 if count > 0:
                     self.api.write_output(f"Deleted {count} messages")
                     logging.info(f"deleted {count} messages")
